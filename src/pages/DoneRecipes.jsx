@@ -6,7 +6,6 @@ class DoneRecipes extends Component {
     return (
       <div>
         <Header title="Done Recipes" search={ false } />
-        DoneRecipes
       </div>
     );
   }
