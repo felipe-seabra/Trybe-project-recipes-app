@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import Header from '../components/Header';
 
-class Meals extends Component {
+class Profile extends Component {
   render() {
     return (
       <div>
-        <Header title="Meals" />
-        Meals
+        <Header title="Profile" search={ false } />
+        Profile
       </div>
     );
   }
 }
 
-export default Meals;
+export default Profile;
