@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { Redirect } from 'react-router-dom';
 import getMeal from '../services/mealApi';
 
 function SearchBar({ searchInput, place }) {
   const [methodToSearch, setMethodToSearch] = useState('');
   const [meals, setMeals] = useState([]);
+  const [shouldRedirect, setShouldRedirect] = useState(false);
 
   const handleChange = ({ target: { value } }) => {
     setMethodToSearch(value);
@@ -12,9 +14,28 @@ function SearchBar({ searchInput, place }) {
 
   const handleSearch = async () => {
     const fetchedMeals = await getMeal(methodToSearch, searchInput, place);
+    if (fetchedMeals.length === 1) {
+      setShouldRedirect(true);
+    }
     setMeals(fetchedMeals);
   };
-  console.log(meals);
+
+  if (shouldRedirect) {
+    if (place === 'Drinks') {
+      const { idDrink } = meals[0];
+      return (
+        <Redirect
+          to={ `/${place.toLowerCase()}/${idDrink}` }
+        />
+      );
+    }
+    const { idMeal } = meals[0];
+    return (
+      <Redirect
+        to={ `/${place.toLowerCase()}/${idMeal}` }
+      />
+    );
+  }
 
   return (
     <section>
