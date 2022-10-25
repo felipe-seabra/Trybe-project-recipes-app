@@ -20,6 +20,11 @@ async function getMeal(method, toSearch, place) {
 
   const ENDPOINT = `https://www.${test}.com/api/json/v1/1/${methodToUse}=${toSearch}`;
   const response = await fetch(ENDPOINT);
+
+  if (test === 'thecocktaildb') {
+    const { drinks } = await response.json();
+    return drinks;
+  }
   const { meals } = await response.json();
   return meals;
 }
