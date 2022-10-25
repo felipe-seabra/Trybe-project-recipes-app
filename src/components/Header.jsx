@@ -20,14 +20,13 @@ class Header extends Component {
     return (
       <header>
         <div>
-      <div>
-        <Link to="/profile">
-          <img
-            src={ profileIcon }
-            alt="Imagem de perfil"
-            data-testid="profile-top-btn"
-          />
-        </Link>
+          <Link to="/profile">
+            <img
+              src={ profileIcon }
+              alt="Imagem de perfil"
+              data-testid="profile-top-btn"
+            />
+          </Link>
           {
             search
           && (
