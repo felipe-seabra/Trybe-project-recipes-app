@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { setLocalStorage } from '../services/localStorage';
 import { actLogin as loginAction } from '../redux/actions';
+import logoRecipesApp from '../images/logoRecipesApp.svg';
 import '../styles/pages/Login.css';
 
 class Login extends React.Component {
@@ -38,6 +39,7 @@ class Login extends React.Component {
     const { password, email } = this.state;
     return (
       <div className="login">
+        <img src={ logoRecipesApp } alt="logo Recipes App" />
         <section className="login-inputs">
           <input
             type="email"
@@ -66,7 +68,6 @@ class Login extends React.Component {
             Entrar
           </button>
         </div>
-
       </div>
     );
   }
