@@ -8,15 +8,20 @@ import SearchBar from './SearchBar';
 class Header extends Component {
   state = {
     activate: false,
+    searchInput: '',
   };
 
   handleClick = () => {
     this.setState((prevState) => ({ activate: !prevState.activate }));
   };
 
+  handleChange = ({ target: { name, value } }) => {
+    this.setState({ [name]: value });
+  };
+
   render() {
     const { title, search = true } = this.props;
-    const { activate } = this.state;
+    const { activate, searchInput } = this.state;
     return (
       <header>
         <div>
@@ -44,9 +49,16 @@ class Header extends Component {
         {activate && (
           <div>
             <label htmlFor="search">
-              <input data-testid="search-input" placeholder="Search" id="search" />
+              <input
+                data-testid="search-input"
+                placeholder="Search"
+                id="search"
+                name="searchInput"
+                value={ searchInput }
+                onChange={ this.handleChange }
+              />
             </label>
-            <SearchBar />
+            <SearchBar place={ title } searchInput={ searchInput } />
           </div>
         )}
       </header>

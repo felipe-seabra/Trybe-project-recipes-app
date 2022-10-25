@@ -16,7 +16,7 @@ describe('Redirecione a pessoa usuária para a tela de perfil ao clicar no botã
   });
 
   test('Se ao clicar na lupa aparece o campo para pesquisar', () => {
-    renderWithRouterAndRedux(<Header title="test" />);
+    renderWithRouterAndRedux(<Header title="meal" />);
     const searchIcon = screen.getByTestId('search-top-btn');
     act(() => {
       userEvent.click(searchIcon);
@@ -31,5 +31,22 @@ describe('Redirecione a pessoa usuária para a tela de perfil ao clicar no botã
     expect(firstLetterRadio).toBeInTheDocument();
     expect(searchBtn).toBeInTheDocument();
     expect(searchInput).toBeInTheDocument();
+  });
+
+  test('', () => {
+    renderWithRouterAndRedux(<Header title="Meals" />);
+    const searchIcon = screen.getByTestId('search-top-btn');
+    act(() => {
+      userEvent.click(searchIcon);
+    });
+    const searchInput = screen.getByTestId('search-input');
+    const searchBtn = screen.getByTestId('exec-search-btn');
+    const ingredientRadio = screen.getByTestId('ingredient-search-radio');
+
+    act(() => {
+      userEvent.type(searchInput, 'chicken');
+      userEvent.click(ingredientRadio);
+      userEvent.click(searchBtn);
+    });
   });
 });
