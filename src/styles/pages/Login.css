@@ -1,8 +1,8 @@
 :root {
 
-  --green-prymary: #2fc18c;
+  --green-prymary: #fcc436;
 
-  --green-secondary: #6fbda0;
+  --green-secondary: #fdd56e;
 }
 
 * {
@@ -89,10 +89,10 @@ body {
 @media screen and ( max-width : 768px ) {
 
   .login {
-    width: 300px;
+    width: 350px;
   }
 
   .link button, .login-inputs {
-    width: 250px;
+    width: 300px;
   }
 }
