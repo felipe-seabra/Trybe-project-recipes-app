@@ -7,9 +7,11 @@ import App from '../App';
 import oneDrink from '../../cypress/mocks/oneDrink';
 
 describe('Redirecione a pessoa usuária para a tela de perfil ao clicar no botão de perfil', () => {
+  // test ids
   const SEARCH_TOP_TEST_ID = 'search-top-btn';
   const SEARCH_INPUT_TEST_ID = 'search-input';
   const SEARCH_BTN_TEST_ID = 'exec-search-btn';
+
   test('A rota muda para a tela de perfil /profile', () => {
     renderWithRouterAndRedux(<Header title="header" />);
 
