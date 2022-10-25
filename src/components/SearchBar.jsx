@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 import getMeal from '../services/mealApi';
+import '../styles/components/searchBy.css';
 
-function SearchBar({ searchInput, place }) {
+function SearchBar({ searchInput, place, history }) {
   const [methodToSearch, setMethodToSearch] = useState('');
   const [meals, setMeals] = useState([]);
   const [shouldRedirect, setShouldRedirect] = useState(false);
@@ -14,10 +15,16 @@ function SearchBar({ searchInput, place }) {
 
   const handleSearch = async () => {
     const fetchedMeals = await getMeal(methodToSearch, searchInput, place);
+    const TWELVE = 12;
     if (fetchedMeals.length === 1) {
       setShouldRedirect(true);
+      setMeals(fetchedMeals);
+    } else if (fetchedMeals.length > TWELVE) {
+      const firstTwelve = fetchedMeals.filter((_elem, index) => index < TWELVE);
+      setMeals(firstTwelve);
+    } else {
+      setMeals(fetchedMeals);
     }
-    setMeals(fetchedMeals);
   };
 
   if (shouldRedirect) {
@@ -86,6 +93,47 @@ function SearchBar({ searchInput, place }) {
           Search
         </button>
       </div>
+      <ul>
+        {
+          meals.map((food, index) => {
+            const { location: { pathname } } = history;
+            if (pathname === '/drinks') {
+              const { strDrink, strDrinkThumb, idDrink } = food;
+              return (
+                <li
+                  key={ idDrink }
+                  data-testid={ `${index}-recipe-card` }
+                >
+                  <img
+                    src={ strDrinkThumb }
+                    alt={ strDrink }
+                    data-testid={ `${index}-card-img` }
+                    className="img"
+                  />
+                  <h1 data-testid={ `${index}-card-name` }>{strDrink}</h1>
+
+                </li>
+              );
+            }
+            const { strMeal, strMealThumb, idMeal } = food;
+            return (
+              <li
+                key={ idMeal }
+                data-testid={ `${index}-recipe-card` }
+              >
+                <img
+                  className="img"
+                  src={ strMealThumb }
+                  alt={ strMeal }
+                  data-testid={ `${index}-card-img` }
+                />
+                <h1 data-testid={ `${index}-card-name` }>{strMeal}</h1>
+
+              </li>
+            );
+          })
+        }
+      </ul>
     </section>
   );
 }
@@ -93,6 +141,11 @@ function SearchBar({ searchInput, place }) {
 SearchBar.propTypes = {
   searchInput: PropTypes.string.isRequired,
   place: PropTypes.string.isRequired,
+  history: PropTypes.shape({
+    location: PropTypes.shape({
+      pathname: PropTypes.string,
+    }),
+  }).isRequired,
 };
 
-export default SearchBar;
+export default withRouter(SearchBar);
