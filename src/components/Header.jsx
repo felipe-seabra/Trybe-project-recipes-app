@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import profileIcon from '../images/profileIcon.svg';
 import searchIcon from '../images/searchIcon.svg';
 
@@ -8,11 +9,13 @@ class Header extends Component {
     const { title, search = true } = this.props;
     return (
       <div>
-        <img
-          src={ profileIcon }
-          alt="Imagem de perfil"
-          data-testid="profile-top-btn"
-        />
+        <Link to="/profile">
+          <img
+            src={ profileIcon }
+            alt="Imagem de perfil"
+            data-testid="profile-top-btn"
+          />
+        </Link>
         {
           search
           && <img
