@@ -6,7 +6,6 @@ class Profile extends Component {
     return (
       <div>
         <Header title="Profile" search={ false } />
-        Profile
       </div>
     );
   }

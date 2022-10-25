@@ -6,7 +6,6 @@ class Meals extends Component {
     return (
       <div>
         <Header title="Meals" />
-        Meals
       </div>
     );
   }
