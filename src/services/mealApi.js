@@ -1,6 +1,6 @@
-async function getMeal(method, toSearch, place) {
+async function getMeal(method, toSearch, location) {
   let methodToUse = null;
-  const test = (place === 'Drinks' ? 'thecocktaildb' : 'themealdb');
+  const domain = (location === '/drinks' ? 'thecocktaildb' : 'themealdb');
 
   switch (method) {
   case 'Ingredient':
@@ -18,10 +18,10 @@ async function getMeal(method, toSearch, place) {
     break;
   }
 
-  const ENDPOINT = `https://www.${test}.com/api/json/v1/1/${methodToUse}=${toSearch}`;
+  const ENDPOINT = `https://www.${domain}.com/api/json/v1/1/${methodToUse}=${toSearch}`;
   const response = await fetch(ENDPOINT);
 
-  if (test === 'thecocktaildb') {
+  if (domain === 'thecocktaildb') {
     const { drinks } = await response.json();
     if (drinks === null) {
       return [];

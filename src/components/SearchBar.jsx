@@ -1,51 +1,49 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import getMeal from '../services/mealApi';
 import '../styles/components/searchBy.css';
+import { actSetDrinks, actSetMeals } from '../redux/actions';
 
-function SearchBar({ searchInput, place, history }) {
+function SearchBar({ searchInput, history, dispatch }) {
   const [methodToSearch, setMethodToSearch] = useState('');
-  const [meals, setMeals] = useState([]);
-  const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [menu, setMenu] = useState([]);
 
   const handleChange = ({ target: { value } }) => {
     setMethodToSearch(value);
   };
 
   const handleSearch = async () => {
-    const fetchedMeals = await getMeal(methodToSearch, searchInput, place);
+    const { location: { pathname }, push } = history;
+    const fetchedMenu = await getMeal(methodToSearch, searchInput, pathname);
+    if (pathname === '/drinks') {
+      dispatch(actSetDrinks(fetchedMenu));
+    } else {
+      dispatch(actSetMeals(fetchedMenu));
+    }
     const TWELVE = 12;
-    if (fetchedMeals.length === 0) {
+    if (fetchedMenu.length === 0) {
       global.alert('Sorry, we haven\'t found any recipes for these filters.');
     }
-    if (fetchedMeals.length === 1) {
-      setShouldRedirect(true);
-      setMeals(fetchedMeals);
-    } else if (fetchedMeals.length > TWELVE) {
-      const firstTwelve = fetchedMeals.filter((_elem, index) => index < TWELVE);
-      setMeals(firstTwelve);
+    if (fetchedMenu.length === 1) {
+      let fetchedMenuId = null;
+      switch (pathname) {
+      case '/drinks':
+        fetchedMenuId = fetchedMenu[0].idDrink;
+        break;
+      default:
+        fetchedMenuId = fetchedMenu[0].idMeal;
+        break;
+      }
+      push(`${pathname}/${fetchedMenuId}`);
+    } else if (fetchedMenu.length > TWELVE) {
+      const firstTwelve = fetchedMenu.filter((_elem, index) => index < TWELVE);
+      setMenu(firstTwelve);
     } else {
-      setMeals(fetchedMeals);
+      setMenu(fetchedMenu);
     }
   };
-
-  if (shouldRedirect) {
-    if (place === 'Drinks') {
-      const { idDrink } = meals[0];
-      return (
-        <Redirect
-          to={ `/${place.toLowerCase()}/${idDrink}` }
-        />
-      );
-    }
-    const { idMeal } = meals[0];
-    return (
-      <Redirect
-        to={ `/${place.toLowerCase()}/${idMeal}` }
-      />
-    );
-  }
 
   return (
     <section>
@@ -98,7 +96,7 @@ function SearchBar({ searchInput, place, history }) {
       </div>
       <ul>
         {
-          meals.map((food, index) => {
+          menu.map((food, index) => {
             const { location: { pathname } } = history;
             if (pathname === '/drinks') {
               const { strDrink, strDrinkThumb, idDrink } = food;
@@ -143,12 +141,13 @@ function SearchBar({ searchInput, place, history }) {
 
 SearchBar.propTypes = {
   searchInput: PropTypes.string.isRequired,
-  place: PropTypes.string.isRequired,
   history: PropTypes.shape({
     location: PropTypes.shape({
       pathname: PropTypes.string,
     }),
+    push: PropTypes.func.isRequired,
   }).isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
-export default withRouter(SearchBar);
+export default connect()(withRouter(SearchBar));

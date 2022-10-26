@@ -1,3 +1,3 @@
 export const LOGIN = 'LOGIN';
-
-export default LOGIN;
+export const SET_DRINKS = 'SET_DRINKS';
+export const SET_MEALS = 'SET_MEALS';
