@@ -6,6 +6,8 @@ import Drinks from '../pages/Drinks';
 import Profile from '../pages/Profile';
 import DoneRecipes from '../pages/DoneRecipes';
 import FavoriteRecipes from '../pages/FavoriteRecipes';
+import DrinkDetail from '../pages/DrinkDetail';
+import MealDetail from '../pages/MealDetail';
 
 export default class Content extends React.Component {
   render() {
@@ -13,13 +15,13 @@ export default class Content extends React.Component {
       <Switch>
         <Route path="/drinks/:id-da-receita/in-progress" />
         <Route path="/meals/:id-da-receita/in-progress" />
-        <Route path="/drinks/:id-da-receita" />
-        <Route path="/meals/:id-da-receita" />
-        <Route path="/profile" component={ Profile } />
-        <Route path="/drinks" component={ Drinks } />
-        <Route path="/meals" component={ Meals } />
-        <Route path="/done-recipes" component={ DoneRecipes } />
-        <Route path="/favorite-recipes" component={ FavoriteRecipes } />
+        <Route exact path="/drinks/:id" component={ DrinkDetail } />
+        <Route path="/meals/:id" component={ MealDetail } />
+        <Route exact path="/profile" component={ Profile } />
+        <Route exact path="/drinks" component={ Drinks } />
+        <Route exact path="/meals" component={ Meals } />
+        <Route exact path="/done-recipes" component={ DoneRecipes } />
+        <Route exact path="/favorite-recipes" component={ FavoriteRecipes } />
         <Route exact path="/" component={ Login } />
       </Switch>
     );

@@ -1,41 +1,49 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import getMeal from '../services/mealApi';
+import '../styles/components/searchBy.css';
+import { actSetDrinks, actSetMeals } from '../redux/actions';
 
-function SearchBar({ searchInput, place }) {
+function SearchBar({ searchInput, history, dispatch }) {
   const [methodToSearch, setMethodToSearch] = useState('');
-  const [meals, setMeals] = useState([]);
-  const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [menu, setMenu] = useState([]);
 
   const handleChange = ({ target: { value } }) => {
     setMethodToSearch(value);
   };
 
   const handleSearch = async () => {
-    const fetchedMeals = await getMeal(methodToSearch, searchInput, place);
-    if (fetchedMeals.length === 1) {
-      setShouldRedirect(true);
+    const { location: { pathname }, push } = history;
+    const fetchedMenu = await getMeal(methodToSearch, searchInput, pathname);
+    if (pathname === '/drinks') {
+      dispatch(actSetDrinks(fetchedMenu));
+    } else {
+      dispatch(actSetMeals(fetchedMenu));
     }
-    setMeals(fetchedMeals);
+    const TWELVE = 12;
+    if (fetchedMenu.length === 0) {
+      global.alert('Sorry, we haven\'t found any recipes for these filters.');
+    }
+    if (fetchedMenu.length === 1) {
+      let fetchedMenuId = null;
+      switch (pathname) {
+      case '/drinks':
+        fetchedMenuId = fetchedMenu[0].idDrink;
+        break;
+      default:
+        fetchedMenuId = fetchedMenu[0].idMeal;
+        break;
+      }
+      push(`${pathname}/${fetchedMenuId}`);
+    } else if (fetchedMenu.length > TWELVE) {
+      const firstTwelve = fetchedMenu.filter((_elem, index) => index < TWELVE);
+      setMenu(firstTwelve);
+    } else {
+      setMenu(fetchedMenu);
+    }
   };
-
-  if (shouldRedirect) {
-    if (place === 'Drinks') {
-      const { idDrink } = meals[0];
-      return (
-        <Redirect
-          to={ `/${place.toLowerCase()}/${idDrink}` }
-        />
-      );
-    }
-    const { idMeal } = meals[0];
-    return (
-      <Redirect
-        to={ `/${place.toLowerCase()}/${idMeal}` }
-      />
-    );
-  }
 
   return (
     <section>
@@ -86,13 +94,60 @@ function SearchBar({ searchInput, place }) {
           Search
         </button>
       </div>
+      <ul>
+        {
+          menu.map((food, index) => {
+            const { location: { pathname } } = history;
+            if (pathname === '/drinks') {
+              const { strDrink, strDrinkThumb, idDrink } = food;
+              return (
+                <li
+                  key={ idDrink }
+                  data-testid={ `${index}-recipe-card` }
+                >
+                  <img
+                    src={ strDrinkThumb }
+                    alt={ strDrink }
+                    data-testid={ `${index}-card-img` }
+                    className="img"
+                  />
+                  <p data-testid={ `${index}-card-name` }>{strDrink}</p>
+
+                </li>
+              );
+            }
+            const { strMeal, strMealThumb, idMeal } = food;
+            return (
+              <li
+                key={ idMeal }
+                data-testid={ `${index}-recipe-card` }
+              >
+                <img
+                  className="img"
+                  src={ strMealThumb }
+                  alt={ strMeal }
+                  data-testid={ `${index}-card-img` }
+                />
+                <p data-testid={ `${index}-card-name` }>{strMeal}</p>
+
+              </li>
+            );
+          })
+        }
+      </ul>
     </section>
   );
 }
 
 SearchBar.propTypes = {
   searchInput: PropTypes.string.isRequired,
-  place: PropTypes.string.isRequired,
+  history: PropTypes.shape({
+    location: PropTypes.shape({
+      pathname: PropTypes.string,
+    }),
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
-export default SearchBar;
+export default connect()(withRouter(SearchBar));
