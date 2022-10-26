@@ -1,8 +1,10 @@
-import { LOGIN } from './actionsTypes';
+import { LOGIN, LOGOUT } from './actionsTypes';
 
 export const actLogin = (state) => ({
   type: LOGIN,
   state,
 });
 
-export default actLogin;
+export const actLogout = () => ({
+  type: LOGOUT,
+});
