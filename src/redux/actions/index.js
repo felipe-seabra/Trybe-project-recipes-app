@@ -13,6 +13,7 @@ export const actSetDrinks = (payload) => ({
 export const actSetMeals = (payload) => ({
   type: SET_MEALS,
   payload,
+});
 
 export const actLogout = () => ({
   type: LOGOUT,
