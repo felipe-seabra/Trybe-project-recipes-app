@@ -15,12 +15,14 @@ class Profile extends Component {
   }
 
   fetchLocalStorage = () => {
-    const emailStorage = localStorage.getItem('user');
-    const parsedObj = JSON.parse(emailStorage);
-    const { email } = parsedObj;
-    this.setState({
-      email,
-    });
+    try {
+      const emailStorage = localStorage.getItem('user');
+      const parsedObj = JSON.parse(emailStorage);
+      const { email } = parsedObj;
+      this.setState({
+        email,
+      });
+    } catch (e) { console.log(e); }
   };
 
   handleRedirect = (route) => {
@@ -31,7 +33,8 @@ class Profile extends Component {
   handleLogout = async () => {
     const { history, actLogout } = this.props;
     actLogout();
-    localStorage.removeItem('user');
+    localStorage.clear();
+    // localStorage.removeItem('user');
     history.push('/');
   };
 
@@ -40,6 +43,7 @@ class Profile extends Component {
     return (
       <div>
         <Header title="Profile" search={ false } />
+
         <p data-testid="profile-email">{email}</p>
         <button
           type="button"
@@ -62,6 +66,7 @@ class Profile extends Component {
         >
           Logout
         </button>
+
         <Footer />
       </div>
     );
@@ -75,10 +80,6 @@ Profile.propTypes = {
   }),
   actLogout: PropTypes.func,
 }.isRequired;
-
-// const mapStateToProps = (state) => ({
-//   email: state.login.email,
-// });
 
 const mapDispatchToProps = (dispatch) => ({
   actLogout: (state) => dispatch(logoutAction(state)),
