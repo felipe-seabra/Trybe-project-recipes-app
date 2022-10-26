@@ -1,4 +1,4 @@
-import { LOGIN, SET_DRINKS, SET_MEALS } from './actionsTypes';
+import { LOGIN, SET_DRINKS, SET_MEALS, LOGOUT } from './actionsTypes';
 
 export const actLogin = (state) => ({
   type: LOGIN,
@@ -13,4 +13,7 @@ export const actSetDrinks = (payload) => ({
 export const actSetMeals = (payload) => ({
   type: SET_MEALS,
   payload,
+
+export const actLogout = () => ({
+  type: LOGOUT,
 });
