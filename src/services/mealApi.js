@@ -23,9 +23,15 @@ async function getMeal(method, toSearch, place) {
 
   if (test === 'thecocktaildb') {
     const { drinks } = await response.json();
+    if (drinks === null) {
+      return [];
+    }
     return drinks;
   }
   const { meals } = await response.json();
+  if (meals === null) {
+    return [];
+  }
   return meals;
 }
 

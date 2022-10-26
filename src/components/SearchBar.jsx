@@ -16,6 +16,9 @@ function SearchBar({ searchInput, place, history }) {
   const handleSearch = async () => {
     const fetchedMeals = await getMeal(methodToSearch, searchInput, place);
     const TWELVE = 12;
+    if (fetchedMeals.length === 0) {
+      global.alert('Sorry, we haven\'t found any recipes for these filters.');
+    }
     if (fetchedMeals.length === 1) {
       setShouldRedirect(true);
       setMeals(fetchedMeals);
@@ -110,7 +113,7 @@ function SearchBar({ searchInput, place, history }) {
                     data-testid={ `${index}-card-img` }
                     className="img"
                   />
-                  <h1 data-testid={ `${index}-card-name` }>{strDrink}</h1>
+                  <p data-testid={ `${index}-card-name` }>{strDrink}</p>
 
                 </li>
               );
@@ -127,7 +130,7 @@ function SearchBar({ searchInput, place, history }) {
                   alt={ strMeal }
                   data-testid={ `${index}-card-img` }
                 />
-                <h1 data-testid={ `${index}-card-name` }>{strMeal}</h1>
+                <p data-testid={ `${index}-card-name` }>{strMeal}</p>
 
               </li>
             );
