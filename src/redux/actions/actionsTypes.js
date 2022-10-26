@@ -1,3 +1,2 @@
 export const LOGIN = 'LOGIN';
-
-export default LOGIN;
+export const LOGOUT = 'LOGOUT';
