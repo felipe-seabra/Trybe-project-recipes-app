@@ -19,6 +19,7 @@ function ButtonFilter({ history, handleGetCategories }) {
   return (
     <div className="button-filter-div">
       <button
+        className="btn"
         type="button"
         data-testid="All-category-filter"
         name="ALL"
