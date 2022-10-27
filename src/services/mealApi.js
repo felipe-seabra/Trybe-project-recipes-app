@@ -1,6 +1,6 @@
-async function getMeal(method, toSearch, pathName) {
+async function getMeal(method, toSearch, location) {
   let methodToUse = null;
-  const domain = (pathName === '/drinks' ? 'thecocktaildb' : 'themealdb');
+  const domain = (location === '/drinks' ? 'thecocktaildb' : 'themealdb');
 
   switch (method) {
   case 'Ingredient':
@@ -8,6 +8,9 @@ async function getMeal(method, toSearch, pathName) {
     break;
   case 'Name':
     methodToUse = 'search.php?s';
+    break;
+  case 'Category':
+    methodToUse = 'filter.php?c';
     break;
   default:
     if (toSearch.length > 1) {

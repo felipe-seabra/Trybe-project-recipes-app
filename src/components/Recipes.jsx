@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import getMeal from '../services/mealApi';
+import ButtonFilter from './ButtonFilter';
 import '../styles/components/searchBy.css';
 
 function Recipes({ history }) {
@@ -12,13 +13,30 @@ function Recipes({ history }) {
       const twelve = 12;
       const firstTwelve = awaitMeal.filter((_elem, index) => index < twelve);
       setMenu(firstTwelve);
-      console.log(awaitMeal);
     };
     recipe();
   }, [history]);
+
+  const handleGetCategories = async ({ target: { name } }) => {
+    const { location: { pathname } } = history;
+    const TWELVE = 12;
+    try {
+      const result = (name === 'ALL'
+        ? await getMeal('Name', '', pathname)
+        : await getMeal('Category', name, pathname));
+      const firstTwelve = result.slice(0, TWELVE);
+      setMenu(firstTwelve);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div>
       <h1>Teste</h1>
+      <ButtonFilter
+        handleGetCategories={ handleGetCategories }
+      />
       <ul>
         {
           menu.map((food, index) => {
