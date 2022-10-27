@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { withRouter, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import RecipeDetailsApi from '../services/RecipeDetailsApi';
@@ -8,7 +8,7 @@ function RecipeDetails({ history }) {
   const { id } = useParams();
   const [parameters, setParameters] = useState([]);
 
-  const verifyPathname = (categoryApi) => {
+  const verifyPathname = useCallback((categoryApi) => {
     if (pathname === `/drinks/${id}`) {
       const { strDrink, strDrinkThumb, idDrink, strCategory, strInstructions,
       } = categoryApi[0];
@@ -33,7 +33,7 @@ function RecipeDetails({ history }) {
       };
       setParameters(data);
     }
-  };
+  }, [id, pathname]);
 
   useEffect(() => {
     const handleFilter = async () => {
@@ -41,7 +41,7 @@ function RecipeDetails({ history }) {
       verifyPathname(categoryApi);
     };
     handleFilter();
-  }, [history]);
+  }, [history, id, pathname, verifyPathname]);
 
   return (
     <div className="container">
