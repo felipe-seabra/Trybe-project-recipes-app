@@ -25,28 +25,43 @@ function Recipes({ history }) {
               const { strDrink, strDrinkThumb, idDrink } = food;
               return (
                 <li
+                  data-testid={ `${index}-recipe-card` }
                   key={ idDrink }
                 >
                   <img
+                    data-testid={ `${index}-card-img` }
                     src={ strDrinkThumb }
                     alt={ strDrink }
                     className="img"
                   />
-                  <p>{strDrink}</p>
+                  <p
+                    data-testid={ `${index}-card-name` }
+                  >
+                    {strDrink}
+
+                  </p>
+
                 </li>
               );
             }
             const { strMeal, strMealThumb, idMeal } = food;
             return (
               <li
+                data-testid={ `${index}-recipe-card` }
                 key={ idMeal }
               >
                 <img
+                  data-testid={ `${index}-card-img` }
                   src={ strMealThumb }
                   alt={ strMeal }
                   className="img"
                 />
-                <p>{strMeal}</p>
+                <p
+                  data-testid={ `${index}-card-name` }
+                >
+                  {strMeal}
+
+                </p>
               </li>
             );
           })
