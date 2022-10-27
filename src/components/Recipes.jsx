@@ -17,11 +17,12 @@ function Recipes({ history }) {
     recipe();
   }, [history]);
 
-  const handleGetCategories = async ({ target: { name } }) => {
+  const handleGetCategories = async ({ target }) => {
+    const { name, checked } = target;
     const { location: { pathname } } = history;
     const TWELVE = 12;
     try {
-      const result = (name === 'ALL'
+      const result = (name === 'ALL' || checked === false
         ? await getMeal('Name', '', pathname)
         : await getMeal('Category', name, pathname));
       const firstTwelve = result.slice(0, TWELVE);
@@ -33,7 +34,6 @@ function Recipes({ history }) {
 
   return (
     <div className="recipes-div">
-      <h1>Teste</h1>
       <ButtonFilter
         handleGetCategories={ handleGetCategories }
       />
