@@ -51,8 +51,9 @@ function RecipeDetails({ history }) {
   }, [history, id, pathname, verifyPathname]);
 
   return (
-    <div className="container">
+    <div className="container justify-content-center">
       <img
+        className="img-fluid"
         data-testid="recipe-photo"
         src={ parameters.picture }
         alt={ parameters.title }
@@ -66,14 +67,17 @@ function RecipeDetails({ history }) {
       <p data-testid="instructions">{parameters.instruction}</p>
       {
         (pathname === `/meals/${parameters.id}`)
-        && <iframe
-          data-testid="video"
-          title="youtube video"
-          src={ parameters.video.replace('watch?v=', 'embed/') }
-          frameBorder="0"
-          allowFullScreen
-          width="100%"
-        />
+        && (
+          <div className="ratio ratio-16x9 mb-3">
+            <iframe
+              data-testid="video"
+              title="youtube video"
+              src={ parameters.video.replace('watch?v=', 'embed/') }
+              frameBorder="0"
+              allowFullScreen
+            />
+          </div>
+        )
       }
     </div>
   );
