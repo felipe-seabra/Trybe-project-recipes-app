@@ -16,36 +16,34 @@ function ButtonFilter({ history, handleGetCategories }) {
   }, [history]);
 
   return (
-    <section>
-      <div>
-        <button
-          type="button"
-          data-testid="All-category-filter"
-          name="ALL"
-          onClick={ handleGetCategories }
-        >
-          All
-        </button>
-        {filtered.map((name, index) => {
-          const NUMBER_FIVE = 5;
-          if (index < NUMBER_FIVE) {
-            const { strCategory } = name;
-            return (
-              <button
-                key={ index }
-                data-testid={ `${strCategory}-category-filter` }
-                type="button"
-                name={ strCategory }
-                onClick={ handleGetCategories }
-              >
-                {strCategory}
-              </button>
-            );
-          }
-          return [];
-        })}
-      </div>
-    </section>
+    <div>
+      <button
+        type="button"
+        data-testid="All-category-filter"
+        name="ALL"
+        onClick={ handleGetCategories }
+      >
+        All
+      </button>
+      {filtered.map((name, index) => {
+        const NUMBER_FIVE = 5;
+        if (index < NUMBER_FIVE) {
+          const { strCategory } = name;
+          return (
+            <button
+              key={ index }
+              data-testid={ `${strCategory}-category-filter` }
+              type="button"
+              name={ strCategory }
+              onClick={ handleGetCategories }
+            >
+              {strCategory}
+            </button>
+          );
+        }
+        return [];
+      })}
+    </div>
   );
 }
 
