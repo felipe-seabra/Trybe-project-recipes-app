@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import profileIcon from '../images/profileIcon.svg';
 import searchIcon from '../images/searchIcon.svg';
 import SearchBar from './SearchBar';
+import '../styles/components/Header.css';
 
 class Header extends Component {
   state = {
@@ -24,7 +25,7 @@ class Header extends Component {
     const { activate, searchInput } = this.state;
     return (
       <header>
-        <div>
+        <div className="header">
           <Link to="/profile">
             <img
               src={ profileIcon }
@@ -35,7 +36,11 @@ class Header extends Component {
           {
             search
           && (
-            <button type="button" onClick={ this.handleClick }>
+            <button
+              className="icon-search"
+              type="button"
+              onClick={ this.handleClick }
+            >
               <img
                 src={ searchIcon }
                 alt="Ícone de pesquisa"
@@ -43,11 +48,11 @@ class Header extends Component {
               />
             </button>)
           }
-          <h1 data-testid="page-title">{title}</h1>
         </div>
+        <h1 data-testid="page-title">{title}</h1>
 
         {activate && (
-          <div>
+          <div className="filters">
             <label htmlFor="search">
               <input
                 data-testid="search-input"
