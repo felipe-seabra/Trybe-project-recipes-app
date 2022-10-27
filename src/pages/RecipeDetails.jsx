@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import RecipeDetailsApi from '../services/RecipeDetailsApi';
 
 function RecipeDetails({ history }) {
   const { location: { pathname } } = history;
+  const { id } = useParams();
   const [parameters, setParameters] = useState([]);
 
   const verifyPathname = (categoryApi) => {
-    console.log(categoryApi);
-    if (pathname === '/drinks') {
-      const { strDrink, strDrinkThumb, idDrink, strCategory,
+    if (pathname === `/drinks/${id}`) {
+      const { strDrink, strDrinkThumb, idDrink, strCategory, strInstructions,
       } = categoryApi[0];
       const data = {
         instruction: strInstructions,
@@ -33,12 +33,11 @@ function RecipeDetails({ history }) {
       };
       setParameters(data);
     }
-    // console.log(parameters);
   };
 
   useEffect(() => {
     const handleFilter = async () => {
-      const categoryApi = await RecipeDetailsApi('52977', pathname);
+      const categoryApi = await RecipeDetailsApi(id, pathname);
       verifyPathname(categoryApi);
     };
     handleFilter();
