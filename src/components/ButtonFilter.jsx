@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import getCategory from '../services/categoryApi';
+import '../styles/components/ButtonFilter.css';
 
 function ButtonFilter({ history, handleGetCategories }) {
   const [filtered, setFiltered] = useState([]);
@@ -16,7 +17,7 @@ function ButtonFilter({ history, handleGetCategories }) {
   }, [history]);
 
   return (
-    <div>
+    <div className="button-filter-div">
       <button
         type="button"
         data-testid="All-category-filter"
@@ -25,6 +26,7 @@ function ButtonFilter({ history, handleGetCategories }) {
       >
         All
       </button>
+      
       {filtered.map((name, index) => {
         const NUMBER_FIVE = 5;
         if (index < NUMBER_FIVE) {
