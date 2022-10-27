@@ -1,6 +1,6 @@
-async function getMeal(method, toSearch, location) {
+async function getMeal(method, toSearch, pathName) {
   let methodToUse = null;
-  const domain = (location === '/drinks' ? 'thecocktaildb' : 'themealdb');
+  const domain = (pathName === '/drinks' ? 'thecocktaildb' : 'themealdb');
 
   switch (method) {
   case 'Ingredient':
