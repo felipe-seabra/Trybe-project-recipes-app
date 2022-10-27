@@ -26,7 +26,6 @@ function ButtonFilter({ history, handleGetCategories }) {
       >
         All
       </button>
-      
       {filtered.map((name, index) => {
         const NUMBER_FIVE = 5;
         if (index < NUMBER_FIVE) {
