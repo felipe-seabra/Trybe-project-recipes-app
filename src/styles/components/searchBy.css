@@ -1,3 +1,26 @@
 .img {
   width: 100px;
 }
+
+/* .recipes-div {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+} */
+
+.btn {
+  background-color: #fdd56e;
+  border: 1px solid black;
+  margin: 5px;
+}
+
+.recipes-div ul {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  list-style: none;
+  margin-top: 30px;
+  text-align: center;
+}
