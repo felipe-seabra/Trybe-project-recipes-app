@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import getCategory from '../services/categoryApi';
 import '../styles/components/ButtonFilter.css';
 
-function ButtonFilter({ history }) {
+function ButtonFilter({ history, handleGetCategories }) {
   const [filtered, setFiltered] = useState([]);
 
   useEffect(() => {
@@ -18,6 +18,14 @@ function ButtonFilter({ history }) {
 
   return (
     <div className="button-filter-div">
+      <button
+        type="button"
+        data-testid="All-category-filter"
+        name="ALL"
+        onClick={ handleGetCategories }
+      >
+        All
+      </button>
       {filtered.map((name, index) => {
         const NUMBER_FIVE = 5;
         if (index < NUMBER_FIVE) {
@@ -27,6 +35,8 @@ function ButtonFilter({ history }) {
               key={ index }
               data-testid={ `${strCategory}-category-filter` }
               type="button"
+              name={ strCategory }
+              onClick={ handleGetCategories }
             >
               {strCategory}
             </button>
@@ -44,6 +54,7 @@ ButtonFilter.propTypes = {
       pathname: PropTypes.string,
     }),
   }).isRequired,
+  handleGetCategories: PropTypes.func.isRequired,
 };
 
 export default withRouter(ButtonFilter);
