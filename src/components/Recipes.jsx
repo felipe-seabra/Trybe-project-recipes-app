@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import getMeal from '../services/mealApi';
 import '../styles/components/searchBy.css';
@@ -14,13 +15,13 @@ function Recipes({ history }) {
       console.log(awaitMeal);
     };
     recipe();
-  }, []);
+  }, [history]);
   return (
     <div>
       <h1>Teste</h1>
       <ul>
         {
-          menu.map((food) => {
+          menu.map((food, index) => {
             if (history.location.pathname === '/drinks') {
               const { strDrink, strDrinkThumb, idDrink } = food;
               return (
