@@ -62,7 +62,6 @@ class Header extends Component {
                 value={ searchInput }
                 onChange={ this.handleChange }
               />
-              <h1> teste</h1>
             </label>
             <SearchBar place={ title } searchInput={ searchInput } />
           </div>
