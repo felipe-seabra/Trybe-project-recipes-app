@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import getMeal from '../services/mealApi';
 import '../styles/components/searchBy.css';
@@ -101,36 +101,37 @@ function SearchBar({ searchInput, history, dispatch }) {
             if (pathname === '/drinks') {
               const { strDrink, strDrinkThumb, idDrink } = food;
               return (
-                <li
-                  key={ idDrink }
-                  data-testid={ `${index}-recipe-card` }
-                >
-                  <img
-                    src={ strDrinkThumb }
-                    alt={ strDrink }
-                    data-testid={ `${index}-card-img` }
-                    className="img"
-                  />
-                  <p data-testid={ `${index}-card-name` }>{strDrink}</p>
+                <Link key={ idDrink } to={ `/drinks/${food.idDrink}` }>
+                  <li
+                    data-testid={ `${index}-recipe-card` }
+                  >
+                    <img
+                      src={ strDrinkThumb }
+                      alt={ strDrink }
+                      data-testid={ `${index}-card-img` }
+                      className="img"
+                    />
+                    <p data-testid={ `${index}-card-name` }>{strDrink}</p>
 
-                </li>
+                  </li>
+                </Link>
               );
             }
             const { strMeal, strMealThumb, idMeal } = food;
             return (
-              <li
-                key={ idMeal }
-                data-testid={ `${index}-recipe-card` }
-              >
-                <img
-                  className="img"
-                  src={ strMealThumb }
-                  alt={ strMeal }
-                  data-testid={ `${index}-card-img` }
-                />
-                <p data-testid={ `${index}-card-name` }>{strMeal}</p>
-
-              </li>
+              <Link key={ idMeal } to={ `/meals/${food.idMeal}` }>
+                <li
+                  data-testid={ `${index}-recipe-card` }
+                >
+                  <img
+                    className="img"
+                    src={ strMealThumb }
+                    alt={ strMeal }
+                    data-testid={ `${index}-card-img` }
+                  />
+                  <p data-testid={ `${index}-card-name` }>{strMeal}</p>
+                </li>
+              </Link>
             );
           })
         }

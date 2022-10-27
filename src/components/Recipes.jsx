@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import getMeal from '../services/mealApi';
 import ButtonFilter from './ButtonFilter';
 import '../styles/components/searchBy.css';
@@ -43,45 +43,44 @@ function Recipes({ history }) {
             if (history.location.pathname === '/drinks') {
               const { strDrink, strDrinkThumb, idDrink } = food;
               return (
+                <Link key={ idDrink } to={ `/drinks/${food.idDrink}` }>
+                  <li
+                    data-testid={ `${index}-recipe-card` }
+                  >
+                    <img
+                      data-testid={ `${index}-card-img` }
+                      src={ strDrinkThumb }
+                      alt={ strDrink }
+                      className="img"
+                    />
+                    <p
+                      data-testid={ `${index}-card-name` }
+                    >
+                      {strDrink}
+                    </p>
+                  </li>
+                </Link>
+              );
+            }
+            const { strMeal, strMealThumb, idMeal } = food;
+            return (
+              <Link key={ idMeal } to={ `/meals/${food.idMeal}` }>
                 <li
                   data-testid={ `${index}-recipe-card` }
-                  key={ idDrink }
                 >
                   <img
                     data-testid={ `${index}-card-img` }
-                    src={ strDrinkThumb }
-                    alt={ strDrink }
+                    src={ strMealThumb }
+                    alt={ strMeal }
                     className="img"
                   />
                   <p
                     data-testid={ `${index}-card-name` }
                   >
-                    {strDrink}
-
+                    {strMeal}
                   </p>
-
                 </li>
-              );
-            }
-            const { strMeal, strMealThumb, idMeal } = food;
-            return (
-              <li
-                data-testid={ `${index}-recipe-card` }
-                key={ idMeal }
-              >
-                <img
-                  data-testid={ `${index}-card-img` }
-                  src={ strMealThumb }
-                  alt={ strMeal }
-                  className="img"
-                />
-                <p
-                  data-testid={ `${index}-card-name` }
-                >
-                  {strMeal}
-
-                </p>
-              </li>
+              </Link>
             );
           })
         }
@@ -90,6 +89,7 @@ function Recipes({ history }) {
     </div>
   );
 }
+
 Recipes.propTypes = {
   history: PropTypes.shape({
     location: PropTypes.shape({
@@ -97,4 +97,5 @@ Recipes.propTypes = {
     }),
   }).isRequired,
 };
+
 export default withRouter(Recipes);
