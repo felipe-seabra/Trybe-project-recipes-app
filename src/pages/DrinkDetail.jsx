@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 function DrinkDetail({ drinks }) {
   const [drink, setFood] = useState([]);
@@ -15,19 +16,19 @@ function DrinkDetail({ drinks }) {
         drink.map((elem, index) => {
           const { strDrink, strDrinkThumb, idDrink } = elem;
           return (
-            <li
-              key={ idDrink }
-              data-testid={ `${index}-recipe-card` }
-            >
-              <img
-                src={ strDrinkThumb }
-                alt={ strDrink }
-                data-testid={ `${index}-card-img` }
-                className="img"
-              />
-              <p data-testid={ `${index}-card-name` }>{strDrink}</p>
-
-            </li>
+            <Link key={ idDrink } to={ `/drinks/${elem.idDrink}` }>
+              <li
+                data-testid={ `${index}-recipe-card` }
+              >
+                <img
+                  src={ strDrinkThumb }
+                  alt={ strDrink }
+                  data-testid={ `${index}-card-img` }
+                  className="img"
+                />
+                <p data-testid={ `${index}-card-name` }>{strDrink}</p>
+              </li>
+            </Link>
           );
         })
 
