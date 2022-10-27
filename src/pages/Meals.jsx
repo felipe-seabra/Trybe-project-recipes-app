@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Recipes from '../components/Recipes';
+import Recomendations from '../components/Recomendations';
 
 class Meals extends Component {
   render() {
@@ -9,6 +10,7 @@ class Meals extends Component {
       <div>
         <Header title="Meals" />
         <Recipes />
+        <Recomendations />
         <Footer />
       </div>
     );
