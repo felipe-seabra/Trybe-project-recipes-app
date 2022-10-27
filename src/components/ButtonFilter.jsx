@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import getCategory from '../services/categoryApi';
+import '../styles/components/ButtonFilter.css';
 
 function ButtonFilter({ history }) {
   const [filtered, setFiltered] = useState([]);
@@ -16,7 +17,7 @@ function ButtonFilter({ history }) {
   }, [history]);
 
   return (
-    <div>
+    <div className="button-filter-div">
       {filtered.map((name, index) => {
         const NUMBER_FIVE = 5;
         if (index < NUMBER_FIVE) {

@@ -17,7 +17,7 @@ function Recipes({ history }) {
     recipe();
   }, [history]);
   return (
-    <div>
+    <div className="recipes-div">
       <h1>Teste</h1>
       <ul>
         {
