@@ -10,10 +10,17 @@ function RecipeDetails({ history }) {
 
   const verifyPathname = useCallback((categoryApi) => {
     if (pathname === `/drinks/${id}`) {
-      const { strDrink, strDrinkThumb, idDrink, strCategory, strInstructions,
+      const {
+        strDrink,
+        strDrinkThumb,
+        idDrink, strCategory,
+        strInstructions,
+        strAlcoholic,
       } = categoryApi[0];
+
       const data = {
         instruction: strInstructions,
+        alcohol: strAlcoholic,
         category: strCategory,
         picture: strDrinkThumb,
         title: strDrink,
@@ -51,6 +58,10 @@ function RecipeDetails({ history }) {
         alt={ parameters.title }
       />
       <h1 data-testid="recipe-title">{parameters.title}</h1>
+      {
+        (pathname === `/drinks/${parameters.id}`)
+        && <p>{parameters.alcohol}</p>
+      }
       <p data-testid="recipe-category">{parameters.category}</p>
       <p data-testid="instructions">{parameters.instruction}</p>
       {
