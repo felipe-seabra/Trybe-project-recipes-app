@@ -19,6 +19,7 @@ function ButtonFilter({ history, handleGetCategories }) {
   return (
     <div className="button-filter-div">
       <button
+        className="btn"
         type="button"
         data-testid="All-category-filter"
         name="ALL"
@@ -31,15 +32,17 @@ function ButtonFilter({ history, handleGetCategories }) {
         if (index < NUMBER_FIVE) {
           const { strCategory } = name;
           return (
-            <button
-              key={ index }
-              data-testid={ `${strCategory}-category-filter` }
-              type="button"
-              name={ strCategory }
-              onClick={ handleGetCategories }
-            >
+            <label htmlFor={ index } key={ index }>
               {strCategory}
-            </button>
+              <input
+                id={ index }
+                className="btn"
+                data-testid={ `${strCategory}-category-filter` }
+                type="checkbox"
+                name={ strCategory }
+                onChange={ handleGetCategories }
+              />
+            </label>
           );
         }
         return [];
