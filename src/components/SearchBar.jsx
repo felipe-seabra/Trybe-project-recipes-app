@@ -98,7 +98,7 @@ function SearchBar({ searchInput, history, dispatch }) {
           </button>
         </div>
       </div>
-      <ul>
+      <ul className="mt-5">
         {
           menu.map((food, index) => {
             const { location: { pathname } } = history;
