@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import getMeal from '../services/mealApi';
 import { actSetDrinks, actSetMeals } from '../redux/actions';
 import '../styles/components/searchBy.css';
+import { Mycontext } from '../context/MyContext';
 
 function SearchBar({ searchInput, history, dispatch }) {
   const [methodToSearch, setMethodToSearch] = useState('');
   const [menu, setMenu] = useState([]);
+  const { setSearch } = useContext(Mycontext);
 
   const handleChange = ({ target: { value } }) => {
     setMethodToSearch(value);
@@ -43,6 +45,7 @@ function SearchBar({ searchInput, history, dispatch }) {
     } else {
       setMenu(fetchedMenu);
     }
+    setSearch(true);
   };
 
   return (
