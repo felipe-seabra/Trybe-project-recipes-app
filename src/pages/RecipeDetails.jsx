@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { withRouter, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import RecipeDetailsApi from '../services/RecipeDetailsApi';
+import Recomendations from '../components/Recomendations';
 
 function RecipeDetails({ history }) {
   const { location: { pathname } } = history;
@@ -82,6 +83,7 @@ function RecipeDetails({ history }) {
           </div>
         )
       }
+      <Recomendations />
     </div>
   );
 }
