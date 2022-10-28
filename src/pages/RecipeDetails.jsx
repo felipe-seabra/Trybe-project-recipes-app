@@ -3,6 +3,7 @@ import { withRouter, useParams, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import RecipeDetailsApi from '../services/RecipeDetailsApi';
 import Recomendations from '../components/Recomendations';
+import '../styles/pages/RecipeDetals.css';
 import searchIcon from '../images/searchIcon.svg';
 import shareIcon from '../images/shareIcon.svg';
 
@@ -97,7 +98,7 @@ function RecipeDetails({ history }) {
         </button>
       </section>
       <img
-        className="img-fluid"
+        className="image-food"
         data-testid="recipe-photo"
         src={ parameters.picture }
         alt={ parameters.title }
