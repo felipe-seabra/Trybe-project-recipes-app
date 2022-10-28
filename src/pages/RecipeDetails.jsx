@@ -7,7 +7,6 @@ import '../styles/pages/RecipeDetals.css';
 import searchIcon from '../images/searchIcon.svg';
 import shareIcon from '../images/shareIcon.svg';
 
-
 function RecipeDetails({ history }) {
   const { location: { pathname } } = history;
   const { id } = useParams();
