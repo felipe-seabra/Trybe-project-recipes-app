@@ -90,6 +90,7 @@ function Recipes({ history }) {
           }
 
         </ul>
+
       </div>
     </div>
   );
