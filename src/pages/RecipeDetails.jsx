@@ -7,8 +7,34 @@ function RecipeDetails({ history }) {
   const { location: { pathname } } = history;
   const { id } = useParams();
   const [parameters, setParameters] = useState([]);
+  const [ingredientsAndMeasures, setIngredientsAndMeasure] = useState({
+    ingredients: [],
+    measures: [],
+  });
+
+  const separateIngredientsAndMeasures = (obj) => {
+    console.log(obj);
+    const entries = Object.entries(obj);
+    const extractIngredientsAndMeasure = entries.reduce((acc, element) => {
+      const accCopy = { ...acc };
+      const key = element[0];
+      const value = element[1];
+      if (key.includes('Ingredient') && value) {
+        accCopy.ingredients.push(value);
+      }
+      if (key.includes('Measure') && (value !== ' ' || value)) {
+        accCopy.measures.push(value);
+      }
+      return accCopy;
+    }, {
+      ingredients: [],
+      measures: [],
+    });
+    setIngredientsAndMeasure(extractIngredientsAndMeasure);
+  };
 
   const verifyPathname = useCallback((categoryApi) => {
+    separateIngredientsAndMeasures(categoryApi[0]);
     if (pathname === `/drinks/${id}`) {
       const {
         strDrink,
@@ -50,6 +76,7 @@ function RecipeDetails({ history }) {
     handleFilter();
   }, [history, id, pathname, verifyPathname]);
 
+  const { ingredients, measures } = ingredientsAndMeasures;
   return (
     <div className="container justify-content-center">
       <img
@@ -61,12 +88,24 @@ function RecipeDetails({ history }) {
       <h1 data-testid="recipe-title">{parameters.title}</h1>
       {
         (pathname === `/drinks/${parameters.id}`)
-        && <p>{parameters.alcohol}</p>
+        && <p data-testid="recipe-category">{parameters.alcohol}</p>
       }
+      <div>
+        <h2>Ingredients</h2>
+        <ul>
+          {
+            ingredients.map((ingredient, index) => (
+              <li
+                data-testid={ `${index}-ingredient-name-and-measure` }
+                key={ index }
+              >
+                {`${ingredient} ${measures[index]}`}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
       <p data-testid="recipe-category">{parameters.category}</p>
-      <ul>
-        {/* www.thecocktaildb.com/api/json/v1/1/lookup.php?iid=552 */}
-      </ul>
       <p data-testid="instructions">{parameters.instruction}</p>
       {
         (pathname === `/meals/${parameters.id}`)
