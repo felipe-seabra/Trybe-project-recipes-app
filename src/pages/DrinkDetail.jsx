@@ -10,7 +10,7 @@ function DrinkDetail({ drinks }) {
   }, [drinks]);
 
   return (
-    <div>
+    <div className="container">
       <h1>DrinkDetail</h1>
       {
         drink.map((elem, index) => {

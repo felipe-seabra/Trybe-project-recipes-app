@@ -3,6 +3,7 @@ import { withRouter, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import RecipeDetailsApi from '../services/RecipeDetailsApi';
 import Recomendations from '../components/Recomendations';
+import '../styles/pages/RecipeDetals.css';
 
 function RecipeDetails({ history }) {
   const { location: { pathname } } = history;
@@ -54,7 +55,7 @@ function RecipeDetails({ history }) {
   return (
     <div className="container justify-content-center">
       <img
-        className="img-fluid"
+        className="image-food"
         data-testid="recipe-photo"
         src={ parameters.picture }
         alt={ parameters.title }
