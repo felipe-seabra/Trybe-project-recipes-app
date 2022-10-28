@@ -1,15 +1,15 @@
-import React, { useState, useMemo } from 'react';
+import React, { useContext, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Recipes from '../components/Recipes';
 
+import { Mycontext } from '../context/MyContext';
+
 function Meals() {
-  const [search, setSearch] = useState(false);
-
-  const handleSearch = useMemo(() => ({
-    setSearch,
-  }), [setSearch]);
-
+  const { search, setSearch } = useContext(Mycontext);
+  useEffect(() => {
+    setSearch(false);
+  }, []);
   return (
     <div>
       <Header title="Meals" />
