@@ -5,8 +5,6 @@ import PropTypes from 'prop-types';
 
 function Recomendations({ history }) {
   const [recomendationData, setRecomendationData] = useState([]);
-  // const [mealApi, setMealApi] = useState([]);
-  // const [drinkApi, setDrinkApi] = useState([]);
 
   const { location: { pathname } } = history;
   const getRecomendationApi = async () => {
