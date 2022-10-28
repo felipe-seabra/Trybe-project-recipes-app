@@ -8,7 +8,7 @@ function Recomendations({ history }) {
 
   const { location: { pathname } } = history;
   const getRecomendationApi = async () => {
-    if (pathname === '/drinks') {
+    if (pathname.includes('drinks')) {
       const response = await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=');
       const data = await response.json();
       setRecomendationData(data);
@@ -26,7 +26,7 @@ function Recomendations({ history }) {
   }, []);
 
   return (
-    <div>alo</div>
+    <div>Recomendations</div>
   );
 }
 
