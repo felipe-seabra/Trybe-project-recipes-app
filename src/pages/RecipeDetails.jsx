@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { withRouter, useParams } from 'react-router-dom';
+import { withRouter, useParams, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import RecipeDetailsApi from '../services/RecipeDetailsApi';
 import Recomendations from '../components/Recomendations';
+import searchIcon from '../images/searchIcon.svg';
+import shareIcon from '../images/shareIcon.svg';
 
 function RecipeDetails({ history }) {
   const { location: { pathname } } = history;
@@ -80,6 +82,20 @@ function RecipeDetails({ history }) {
   const { ingredients, measures } = ingredientsAndMeasures;
   return (
     <div className="container justify-content-center">
+      <section>
+        <button
+          type="button"
+          data-testid="share-btn"
+        >
+          <img src={ searchIcon } alt="Botão compartilhar" />
+        </button>
+        <button
+          type="button"
+          data-testid="favorite-btn"
+        >
+          <img src={ shareIcon } alt="Botão favoritar" />
+        </button>
+      </section>
       <img
         className="img-fluid"
         data-testid="recipe-photo"
@@ -123,6 +139,15 @@ function RecipeDetails({ history }) {
         )
       }
       <Recomendations />
+      <Link to={ `${parameters.id}/in-progress` }>
+        <button
+          type="button"
+          className="btn fixed-bottom"
+          data-testid="start-recipe-btn"
+        >
+          Start Recipe
+        </button>
+      </Link>
     </div>
   );
 }
