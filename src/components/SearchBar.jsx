@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import getMeal from '../services/mealApi';
-import '../styles/components/searchBy.css';
 import { actSetDrinks, actSetMeals } from '../redux/actions';
+import '../styles/components/searchBy.css';
 
 function SearchBar({ searchInput, history, dispatch }) {
   const [methodToSearch, setMethodToSearch] = useState('');
@@ -46,55 +46,59 @@ function SearchBar({ searchInput, history, dispatch }) {
   };
 
   return (
-    <section>
-      <div>
-        <label htmlFor="ingredient">
-          <input
-            type="radio"
-            data-testid="ingredient-search-radio"
-            id="ingredient"
-            name="searchOption"
-            onChange={ handleChange }
-            value="Ingredient"
-          />
-          Ingredient
-        </label>
+    <section className="container-search">
+      <div className="search-bar">
+        <div className="searchbar-input">
 
-        <label htmlFor="name">
-          <input
-            type="radio"
-            data-testid="name-search-radio"
-            id="name"
-            name="searchOption"
-            onChange={ handleChange }
-            value="Name"
-          />
-          Name
-        </label>
+          <label htmlFor="ingredient">
+            <input
+              type="radio"
+              data-testid="ingredient-search-radio"
+              id="ingredient"
+              name="searchOption"
+              onChange={ handleChange }
+              value="Ingredient"
+            />
+            Ingredient
+          </label>
 
-        <label htmlFor="First letter">
-          <input
-            type="radio"
-            data-testid="first-letter-search-radio"
-            id="First letter"
-            name="searchOption"
-            onChange={ handleChange }
-            value="First Letter"
-          />
-          First letter
-        </label>
+          <label htmlFor="name">
+            <input
+              type="radio"
+              data-testid="name-search-radio"
+              id="name"
+              name="searchOption"
+              onChange={ handleChange }
+              value="Name"
+            />
+            Name
+          </label>
+
+          <label htmlFor="First letter">
+            <input
+              type="radio"
+              data-testid="first-letter-search-radio"
+              id="First letter"
+              name="searchOption"
+              onChange={ handleChange }
+              value="First Letter"
+            />
+            First letter
+          </label>
+        </div>
+
+        <div>
+          <button
+            className="btn-search"
+            data-testid="exec-search-btn"
+            type="button"
+            onClick={ handleSearch }
+          >
+            Search
+          </button>
+        </div>
       </div>
-
-      <div>
-        <button
-          data-testid="exec-search-btn"
-          type="button"
-          onClick={ handleSearch }
-        >
-          Search
-        </button>
-      </div>
-      <ul>
+      <ul className="mt-5">
         {
           menu.map((food, index) => {
             const { location: { pathname } } = history;
