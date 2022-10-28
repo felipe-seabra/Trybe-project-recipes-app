@@ -64,6 +64,9 @@ function RecipeDetails({ history }) {
         && <p>{parameters.alcohol}</p>
       }
       <p data-testid="recipe-category">{parameters.category}</p>
+      <ul>
+        {/* www.thecocktaildb.com/api/json/v1/1/lookup.php?iid=552 */}
+      </ul>
       <p data-testid="instructions">{parameters.instruction}</p>
       {
         (pathname === `/meals/${parameters.id}`)
