@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { actLogout as logoutAction } from '../redux/actions';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import '../styles/pages/Profile.css';
 
 class Profile extends Component {
   state = {
@@ -43,29 +44,33 @@ class Profile extends Component {
     return (
       <div>
         <Header title="Profile" search={ false } />
-
-        <p data-testid="profile-email">{email}</p>
-        <button
-          type="button"
-          data-testid="profile-done-btn"
-          onClick={ () => this.handleRedirect('/done-recipes') }
-        >
-          Done Recipes
-        </button>
-        <button
-          type="button"
-          data-testid="profile-favorite-btn"
-          onClick={ () => this.handleRedirect('/favorite-recipes') }
-        >
-          Favorite Recipes
-        </button>
-        <button
-          type="button"
-          data-testid="profile-logout-btn"
-          onClick={ this.handleLogout }
-        >
-          Logout
-        </button>
+        <h4 className="text-center mt-5 email" data-testid="profile-email">{email}</h4>
+        <div className="container d-flex justify-content-center mt-5">
+          <button
+            className="btn"
+            type="button"
+            data-testid="profile-done-btn"
+            onClick={ () => this.handleRedirect('/done-recipes') }
+          >
+            Done Recipes
+          </button>
+          <button
+            className="btn"
+            type="button"
+            data-testid="profile-favorite-btn"
+            onClick={ () => this.handleRedirect('/favorite-recipes') }
+          >
+            Favorite Recipes
+          </button>
+          <button
+            className="btn"
+            type="button"
+            data-testid="profile-logout-btn"
+            onClick={ this.handleLogout }
+          >
+            Logout
+          </button>
+        </div>
 
         <Footer />
       </div>

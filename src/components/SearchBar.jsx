@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import getMeal from '../services/mealApi';
-import '../styles/components/searchBy.css';
 import { actSetDrinks, actSetMeals } from '../redux/actions';
+import '../styles/components/searchBy.css';
 
 function SearchBar({ searchInput, history, dispatch }) {
   const [methodToSearch, setMethodToSearch] = useState('');
@@ -46,8 +46,8 @@ function SearchBar({ searchInput, history, dispatch }) {
   };
 
   return (
-    <section>
-      <div>
+    <section className="container-search">
+      <div className="search-bar">
         <label htmlFor="ingredient">
           <input
             type="radio"
@@ -87,6 +87,7 @@ function SearchBar({ searchInput, history, dispatch }) {
 
       <div>
         <button
+          className="btn-search"
           data-testid="exec-search-btn"
           type="button"
           onClick={ handleSearch }

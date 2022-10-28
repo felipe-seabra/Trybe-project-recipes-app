@@ -49,12 +49,13 @@ class Header extends Component {
             </button>)
           }
         </div>
-        <h1 data-testid="page-title">{title}</h1>
+        <h1 className="mt-4" data-testid="page-title">{title}</h1>
 
         {activate && (
           <div className="filters">
             <label htmlFor="search">
               <input
+                className="input-search"
                 data-testid="search-input"
                 placeholder="Search"
                 id="search"

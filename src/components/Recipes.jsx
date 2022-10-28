@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter, Link } from 'react-router-dom';
 import getMeal from '../services/mealApi';
 import ButtonFilter from './ButtonFilter';
-import '../styles/components/searchBy.css';
+import '../styles/components/Recipes.css';
 
 function Recipes({ history }) {
   const [menu, setMenu] = useState([]);
@@ -33,59 +33,64 @@ function Recipes({ history }) {
   };
 
   return (
-    <div className="recipes-div">
+    <div>
       <ButtonFilter
         handleGetCategories={ handleGetCategories }
       />
-      <ul>
-        {
-          menu.map((food, index) => {
-            if (history.location.pathname === '/drinks') {
-              const { strDrink, strDrinkThumb, idDrink } = food;
+      <div className="recipes-div">
+
+        <ul>
+          {
+            menu.map((food, index) => {
+              if (history.location.pathname === '/drinks') {
+                const { strDrink, strDrinkThumb, idDrink } = food;
+                return (
+                  <Link key={ idDrink } to={ `/drinks/${food.idDrink}` }>
+                    <li
+                      data-testid={ `${index}-recipe-card` }
+                    >
+                      <img
+                        data-testid={ `${index}-card-img` }
+                        src={ strDrinkThumb }
+                        alt={ strDrink }
+                        className="img"
+                      />
+                      <p
+                        data-testid={ `${index}-card-name` }
+                        className="mt-1"
+                      >
+                        {strDrink}
+                      </p>
+                    </li>
+                  </Link>
+                );
+              }
+              const { strMeal, strMealThumb, idMeal } = food;
               return (
-                <Link key={ idDrink } to={ `/drinks/${food.idDrink}` }>
+                <Link key={ idMeal } to={ `/meals/${food.idMeal}` }>
                   <li
                     data-testid={ `${index}-recipe-card` }
                   >
                     <img
                       data-testid={ `${index}-card-img` }
-                      src={ strDrinkThumb }
-                      alt={ strDrink }
+                      src={ strMealThumb }
+                      alt={ strMeal }
                       className="img"
                     />
                     <p
                       data-testid={ `${index}-card-name` }
+                      className="mt-1"
                     >
-                      {strDrink}
+                      {strMeal}
                     </p>
                   </li>
                 </Link>
               );
-            }
-            const { strMeal, strMealThumb, idMeal } = food;
-            return (
-              <Link key={ idMeal } to={ `/meals/${food.idMeal}` }>
-                <li
-                  data-testid={ `${index}-recipe-card` }
-                >
-                  <img
-                    data-testid={ `${index}-card-img` }
-                    src={ strMealThumb }
-                    alt={ strMeal }
-                    className="img"
-                  />
-                  <p
-                    data-testid={ `${index}-card-name` }
-                  >
-                    {strMeal}
-                  </p>
-                </li>
-              </Link>
-            );
-          })
-        }
+            })
+          }
 
-      </ul>
+        </ul>
+      </div>
     </div>
   );
 }
