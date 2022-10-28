@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { withRouter, useParams, Link } from 'react-router-dom';
+import copy from 'clipboard-copy';
 import PropTypes from 'prop-types';
 import RecipeDetailsApi from '../services/RecipeDetailsApi';
 import Recomendations from '../components/Recomendations';
@@ -10,6 +11,7 @@ function RecipeDetails({ history }) {
   const { location: { pathname } } = history;
   const { id } = useParams();
   const [parameters, setParameters] = useState([]);
+  const [shareCopy, setShareCopy] = useState([]);
   const [ingredientsAndMeasures, setIngredientsAndMeasure] = useState({
     ingredients: [],
     measures: [],
@@ -78,6 +80,18 @@ function RecipeDetails({ history }) {
     };
     handleFilter();
   }, [history, id, pathname, verifyPathname]);
+  console.log(history);
+
+  const handleCopy = () => {
+    const url = window.location.href;
+    copy(url);
+    setShareCopy('Link copied!');
+
+    const THREE_SECONDS = 3000;
+    setTimeout(() => {
+      setShareCopy([]);
+    }, THREE_SECONDS);
+  };
 
   const { ingredients, measures } = ingredientsAndMeasures;
   return (
@@ -86,14 +100,16 @@ function RecipeDetails({ history }) {
         <button
           type="button"
           data-testid="share-btn"
+          onClick={ handleCopy }
         >
-          <img src={ searchIcon } alt="Botão compartilhar" />
+          <img src={ shareIcon } alt="Botão compartilhar" />
         </button>
+        <p>{shareCopy}</p>
         <button
           type="button"
           data-testid="favorite-btn"
         >
-          <img src={ shareIcon } alt="Botão favoritar" />
+          <img src={ searchIcon } alt="Botão favoritar" />
         </button>
       </section>
       <img
