@@ -25,7 +25,6 @@ function Recomendations({ history }) {
     getRecomendationApi();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  console.log(recomendationData);
 
   const NUMBER_SIX = 6;
   return (

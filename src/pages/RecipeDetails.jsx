@@ -5,12 +5,16 @@ import PropTypes from 'prop-types';
 import RecipeDetailsApi from '../services/RecipeDetailsApi';
 import Recomendations from '../components/Recomendations';
 import '../styles/pages/RecipeDetals.css';
-import searchIcon from '../images/searchIcon.svg';
+import whiteHeartIcon from '../images/whiteHeartIcon.svg';
+import blackHeartIcon from '../images/blackHeartIcon.svg';
 import shareIcon from '../images/shareIcon.svg';
+import { getLocalStorage, setLocalStorage } from '../services/localStorage';
 
 function RecipeDetails({ history }) {
   const { location: { pathname } } = history;
   const { id } = useParams();
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [defaultApi, setDefaultApi] = useState({});
   const [parameters, setParameters] = useState([]);
   const [shareCopy, setShareCopy] = useState([]);
   const [ingredientsAndMeasures, setIngredientsAndMeasure] = useState({
@@ -19,7 +23,6 @@ function RecipeDetails({ history }) {
   });
 
   const separateIngredientsAndMeasures = (obj) => {
-    console.log(obj);
     const entries = Object.entries(obj);
     const extractIngredientsAndMeasure = entries.reduce((acc, element) => {
       const accCopy = { ...acc };
@@ -77,11 +80,11 @@ function RecipeDetails({ history }) {
   useEffect(() => {
     const handleFilter = async () => {
       const categoryApi = await RecipeDetailsApi(id, pathname);
+      setDefaultApi(categoryApi[0]);
       verifyPathname(categoryApi);
     };
     handleFilter();
   }, [history, id, pathname, verifyPathname]);
-  console.log(history);
 
   const handleCopy = () => {
     const url = window.location.href;
@@ -93,6 +96,46 @@ function RecipeDetails({ history }) {
       setShareCopy([]);
     }, THREE_SECONDS);
   };
+
+  const handleFavorite = () => {
+    const {
+      idDrink,
+      idMeal,
+      strArea,
+      strCategory,
+      strAlcoholic,
+      strDrink,
+      strMeal,
+      strDrinkThumb,
+      strMealThumb,
+    } = defaultApi;
+
+    const newFavorite = {
+      id: idDrink || idMeal,
+      type: pathname.includes('drink') ? 'drink' : 'meal',
+      nationality: strArea || '',
+      category: strCategory,
+      alcoholicOrNot: strAlcoholic || '',
+      name: strDrink || strMeal,
+      image: strDrinkThumb || strMealThumb,
+    };
+
+    const savedRecipes = getLocalStorage('favoriteRecipes');
+    console.log(savedRecipes);
+    if (savedRecipes === null) {
+      setLocalStorage('favoriteRecipes', [newFavorite]);
+    } else {
+      setLocalStorage('favoriteRecipes', [...savedRecipes, newFavorite]);
+    }
+  };
+
+  useEffect(() => {
+    const savedRecipes = getLocalStorage('favoriteRecipes');
+    if (savedRecipes !== null) {
+      const recipeIsFavorite = savedRecipes.some((element) => element.id === id);
+      setIsFavorite(recipeIsFavorite);
+    }
+  }, []);
 
   const { ingredients, measures } = ingredientsAndMeasures;
   return (
@@ -109,8 +152,12 @@ function RecipeDetails({ history }) {
         <button
           type="button"
           data-testid="favorite-btn"
+          onClick={ handleFavorite }
         >
-          <img src={ searchIcon } alt="Botão favoritar" />
+          <img
+            src={ isFavorite ? blackHeartIcon : whiteHeartIcon }
+            alt="Botão favoritar"
+          />
         </button>
       </section>
       <img
