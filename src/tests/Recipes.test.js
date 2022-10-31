@@ -6,6 +6,19 @@ import RenderWithContext from './helpers/RenderWithRouterContext';
 import App from '../App';
 
 describe('Verifica cobertura de teste de 45% da página Recipes', () => {
+  const recipeZero = '0-recipe-card';
+  const recipeOne = '1-recipe-card';
+  const recipeTwo = '2-recipe-card';
+  const recipeThree = '3-recipe-card';
+  const recipeFour = '4-recipe-card';
+  const recipeFive = '5-recipe-card';
+  const recipeSix = '6-recipe-card';
+  const recipeSeven = '7-recipe-card';
+  const recipeEight = '8-recipe-card';
+  const recipeNine = '9-recipe-card';
+  const recipeTen = '10-recipe-card';
+  const recipeTwelve = '11-recipe-card';
+
   it('Verifica se está na tela as informações', async () => {
     const { history } = RenderWithContext(<App />);
     history.push('/meals');
@@ -22,18 +35,18 @@ describe('Verifica cobertura de teste de 45% da página Recipes', () => {
     expect(clickDring).toBeInTheDocument();
 
     userEvent.click(chekcboxBreakfast);
-    const mealZero = await screen.findByTestId('0-recipe-card');
-    const mealOne = await screen.findByTestId('1-recipe-card');
-    const mealTwo = await screen.findByTestId('2-recipe-card');
-    const mealThree = await screen.findByTestId('3-recipe-card');
-    const mealFour = await screen.findByTestId('4-recipe-card');
-    const mealFive = await screen.findByTestId('5-recipe-card');
-    const mealSix = await screen.findByTestId('6-recipe-card');
-    const mealSeven = await screen.findByTestId('7-recipe-card');
-    const mealEight = await screen.findByTestId('8-recipe-card');
-    const mealNine = await screen.findByTestId('9-recipe-card');
-    const mealTen = await screen.findByTestId('10-recipe-card');
-    const mealeleven = await screen.findByTestId('11-recipe-card');
+    const mealZero = await screen.findByTestId(recipeZero);
+    const mealOne = await screen.findByTestId(recipeOne);
+    const mealTwo = await screen.findByTestId(recipeTwo);
+    const mealThree = await screen.findByTestId(recipeThree);
+    const mealFour = await screen.findByTestId(recipeFour);
+    const mealFive = await screen.findByTestId(recipeFive);
+    const mealSix = await screen.findByTestId(recipeSix);
+    const mealSeven = await screen.findByTestId(recipeSeven);
+    const mealEight = await screen.findByTestId(recipeEight);
+    const mealNine = await screen.findByTestId(recipeNine);
+    const mealTen = await screen.findByTestId(recipeTen);
+    const mealeleven = await screen.findByTestId(recipeTwelve);
 
     expect(mealZero).toBeInTheDocument();
     expect(mealOne).toBeInTheDocument();
@@ -50,18 +63,18 @@ describe('Verifica cobertura de teste de 45% da página Recipes', () => {
 
     userEvent.click(checkboxAll);
 
-    const allbtnMealsZero = await screen.findByTestId('0-recipe-card');
-    const allbtnMealsOne = await screen.findByTestId('1-recipe-card');
-    const allbtnMealsTwo = await screen.findByTestId('2-recipe-card');
-    const allbtnMealsThree = await screen.findByTestId('3-recipe-card');
-    const allbtnMealsFour = await screen.findByTestId('4-recipe-card');
-    const allbtnMealsFive = await screen.findByTestId('5-recipe-card');
-    const allbtnMealsSix = await screen.findByTestId('6-recipe-card');
-    const allbtnMealsSeven = await screen.findByTestId('7-recipe-card');
-    const allbtnMealsEight = await screen.findByTestId('8-recipe-card');
-    const allbtnMealsNine = await screen.findByTestId('9-recipe-card');
-    const allbtnMealsTen = await screen.findByTestId('10-recipe-card');
-    const allbtnMealseleven = await screen.findByTestId('11-recipe-card');
+    const allbtnMealsZero = await screen.findByTestId(recipeZero);
+    const allbtnMealsOne = await screen.findByTestId(recipeOne);
+    const allbtnMealsTwo = await screen.findByTestId(recipeTwo);
+    const allbtnMealsThree = await screen.findByTestId(recipeThree);
+    const allbtnMealsFour = await screen.findByTestId(recipeFour);
+    const allbtnMealsFive = await screen.findByTestId(recipeFive);
+    const allbtnMealsSix = await screen.findByTestId(recipeSix);
+    const allbtnMealsSeven = await screen.findByTestId(recipeSeven);
+    const allbtnMealsEight = await screen.findByTestId(recipeEight);
+    const allbtnMealsNine = await screen.findByTestId(recipeNine);
+    const allbtnMealsTen = await screen.findByTestId(recipeTen);
+    const allbtnMealseleven = await screen.findByTestId(recipeTwelve);
 
     expect(allbtnMealsZero).toBeInTheDocument();
     expect(allbtnMealsOne).toBeInTheDocument();
