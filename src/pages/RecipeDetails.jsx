@@ -13,7 +13,7 @@ import { getLocalStorage, setLocalStorage } from '../services/localStorage';
 function RecipeDetails({ history }) {
   const { location: { pathname } } = history;
   const { id } = useParams();
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [favorites, setFavorites] = useState([]);
   const [defaultApi, setDefaultApi] = useState({});
   const [parameters, setParameters] = useState([]);
   const [shareCopy, setShareCopy] = useState([]);
@@ -120,20 +120,24 @@ function RecipeDetails({ history }) {
       image: strDrinkThumb || strMealThumb,
     };
 
-    const savedRecipes = getLocalStorage('favoriteRecipes');
-    console.log(savedRecipes);
-    if (savedRecipes === null) {
-      setLocalStorage('favoriteRecipes', [newFavorite]);
+    const recipeIsFavorite = favorites
+      .some((recipe) => Number(recipe.id) === Number(id));
+    if (recipeIsFavorite) {
+      const removedItem = favorites.filter((recipe) => (
+        Number(recipe.id) !== Number(id)
+      ));
+      setLocalStorage('favoriteRecipes', removedItem);
+      setFavorites(removedItem);
     } else {
-      setLocalStorage('favoriteRecipes', [...savedRecipes, newFavorite]);
+      setLocalStorage('favoriteRecipes', [...favorites, newFavorite]);
+      setFavorites([...favorites, newFavorite]);
     }
   };
 
   useEffect(() => {
-    const savedRecipes = getLocalStorage('favoriteRecipes');
-    if (savedRecipes !== null) {
-      const recipeIsFavorite = savedRecipes.some((element) => element.id === id);
-      setIsFavorite(recipeIsFavorite);
+    const favoriteRecipes = getLocalStorage('favoriteRecipes');
+    if (favoriteRecipes !== null) {
+      setFavorites(favoriteRecipes);
     }
   }, []);
 
@@ -151,11 +155,12 @@ function RecipeDetails({ history }) {
         <p>{shareCopy}</p>
         <button
           type="button"
-          data-testid="favorite-btn"
           onClick={ handleFavorite }
         >
           <img
-            src={ isFavorite ? blackHeartIcon : whiteHeartIcon }
+            data-testid="favorite-btn"
+            src={ favorites.some(((element) => Number(element.id) === Number(id)
+            )) ? blackHeartIcon : whiteHeartIcon }
             alt="Botão favoritar"
           />
         </button>
