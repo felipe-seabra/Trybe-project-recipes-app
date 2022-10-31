@@ -5,21 +5,24 @@ import PropTypes from 'prop-types';
 import RecipeDetailsApi from '../services/RecipeDetailsApi';
 import Recomendations from '../components/Recomendations';
 import '../styles/pages/RecipeDetals.css';
-import searchIcon from '../images/searchIcon.svg';
+import whiteHeartIcon from '../images/whiteHeartIcon.svg';
+import blackHeartIcon from '../images/blackHeartIcon.svg';
 import shareIcon from '../images/shareIcon.svg';
+import { getLocalStorage, setLocalStorage } from '../services/localStorage';
 
 function RecipeDetails({ history }) {
   const { location: { pathname } } = history;
   const { id } = useParams();
+  const [favorites, setFavorites] = useState([]);
+  const [defaultApi, setDefaultApi] = useState({});
   const [parameters, setParameters] = useState([]);
   const [shareCopy, setShareCopy] = useState([]);
   const [ingredientsAndMeasures, setIngredientsAndMeasure] = useState({
     ingredients: [],
     measures: [],
   });
-
+  const [isInProgress, setIsInProgress] = useState(false);
   const separateIngredientsAndMeasures = (obj) => {
-    console.log(obj);
     const entries = Object.entries(obj);
     const extractIngredientsAndMeasure = entries.reduce((acc, element) => {
       const accCopy = { ...acc };
@@ -38,7 +41,6 @@ function RecipeDetails({ history }) {
     });
     setIngredientsAndMeasure(extractIngredientsAndMeasure);
   };
-
   const verifyPathname = useCallback((categoryApi) => {
     separateIngredientsAndMeasures(categoryApi[0]);
     if (pathname === `/drinks/${id}`) {
@@ -73,16 +75,14 @@ function RecipeDetails({ history }) {
       setParameters(data);
     }
   }, [id, pathname]);
-
   useEffect(() => {
     const handleFilter = async () => {
       const categoryApi = await RecipeDetailsApi(id, pathname);
+      setDefaultApi(categoryApi[0]);
       verifyPathname(categoryApi);
     };
     handleFilter();
   }, [history, id, pathname, verifyPathname]);
-  console.log(history);
-
   const handleCopy = () => {
     const url = window.location.href;
     copy(url);
@@ -93,6 +93,68 @@ function RecipeDetails({ history }) {
       setShareCopy([]);
     }, THREE_SECONDS);
   };
+  const handleFavorite = () => {
+    const {
+      idDrink,
+      idMeal,
+      strArea,
+      strCategory,
+      strAlcoholic,
+      strDrink,
+      strMeal,
+      strDrinkThumb,
+      strMealThumb,
+    } = defaultApi;
+
+    const newFavorite = {
+      id: idDrink || idMeal,
+      type: pathname.includes('drink') ? 'drink' : 'meal',
+      nationality: strArea || '',
+      category: strCategory,
+      alcoholicOrNot: strAlcoholic || '',
+      name: strDrink || strMeal,
+      image: strDrinkThumb || strMealThumb,
+    };
+
+    const recipeIsFavorite = favorites
+      .some((recipe) => Number(recipe.id) === Number(id));
+    if (recipeIsFavorite) {
+      const removedItem = favorites.filter((recipe) => (
+        Number(recipe.id) !== Number(id)
+      ));
+      setLocalStorage('favoriteRecipes', removedItem);
+      setFavorites(removedItem);
+    } else {
+      setLocalStorage('favoriteRecipes', [...favorites, newFavorite]);
+      setFavorites([...favorites, newFavorite]);
+    }
+  };
+
+  useEffect(() => {
+    const favoriteRecipes = getLocalStorage('favoriteRecipes');
+    const recipesInProgress = getLocalStorage('inProgressRecipes') || {};
+    const key = pathname.includes('drinks') ? 'drinks' : 'meals';
+    const keys = Object.keys(recipesInProgress[key] || []);
+    setIsInProgress(keys.includes(id));
+    if (favoriteRecipes !== null) {
+      setFavorites(favoriteRecipes);
+    }
+  }, [pathname, id]);
+
+  const handleStartedRecipes = () => {
+    const defaultObj = {
+      drinks: {
+      },
+      meals: {
+      },
+    };
+    const inProgressRecipes = getLocalStorage('inProgressRecipes') || defaultObj;
+    const key = pathname.includes('drinks') ? 'drinks' : 'meals';
+    inProgressRecipes[key][id] = [];
+    if (inProgressRecipes) {
+      setLocalStorage('inProgressRecipes', inProgressRecipes);
+    }
+  };
 
   const { ingredients, measures } = ingredientsAndMeasures;
   return (
@@ -100,17 +162,22 @@ function RecipeDetails({ history }) {
       <section>
         <button
           type="button"
-          data-testid="share-btn"
           onClick={ handleCopy }
+          data-testid="share-btn"
         >
           <img src={ shareIcon } alt="Botão compartilhar" />
         </button>
         <p>{shareCopy}</p>
         <button
           type="button"
-          data-testid="favorite-btn"
+          onClick={ handleFavorite }
         >
-          <img src={ searchIcon } alt="Botão favoritar" />
+          <img
+            data-testid="favorite-btn"
+            src={ favorites.some(((element) => Number(element.id) === Number(id)
+            )) ? blackHeartIcon : whiteHeartIcon }
+            alt="Botão favoritar"
+          />
         </button>
       </section>
       <img
@@ -161,8 +228,9 @@ function RecipeDetails({ history }) {
           type="button"
           className="btn fixed-bottom"
           data-testid="start-recipe-btn"
+          onClick={ handleStartedRecipes }
         >
-          Start Recipe
+          {isInProgress ? 'Continue Recipe' : 'Start Recipe'}
         </button>
       </Link>
     </div>
