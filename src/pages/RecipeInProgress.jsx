@@ -1,14 +1,15 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState, useCallback } from 'react';
-import { withRouter, useParams, Link } from 'react-router-dom';
+import { withRouter, useParams } from 'react-router-dom';
 import copy from 'clipboard-copy';
 import PropTypes from 'prop-types';
 import RecipeDetailsApi from '../services/RecipeDetailsApi';
-import Recomendations from '../components/Recomendations';
 import '../styles/pages/RecipeDetals.css';
 import searchIcon from '../images/searchIcon.svg';
 import shareIcon from '../images/shareIcon.svg';
+import '../styles/pages/RecipeInProgress.css';
 
-function RecipeDetails({ history }) {
+function RecipeInProgress({ history }) {
   const { location: { pathname } } = history;
   const { id } = useParams();
   const [parameters, setParameters] = useState([]);
@@ -41,7 +42,7 @@ function RecipeDetails({ history }) {
 
   const verifyPathname = useCallback((categoryApi) => {
     separateIngredientsAndMeasures(categoryApi[0]);
-    if (pathname === `/drinks/${id}`) {
+    if (pathname.includes('drinks')) {
       const {
         strDrink,
         strDrinkThumb,
@@ -93,6 +94,17 @@ function RecipeDetails({ history }) {
     }, THREE_SECONDS);
   };
 
+  const handleChecked = ({ target }) => {
+    const { checked } = target;
+    console.log(target);
+    console.log(checked);
+    if (checked) {
+      target.parentElement.className = 'checked';
+    } else {
+      target.parentElement.className = 'noChecked';
+    }
+  };
+
   const { ingredients, measures } = ingredientsAndMeasures;
   return (
     <div className="container justify-content-center">
@@ -120,55 +132,47 @@ function RecipeDetails({ history }) {
       />
       <h1 data-testid="recipe-title">{parameters.title}</h1>
       {
-        (pathname === `/drinks/${parameters.id}`)
+        (pathname === `/drinks/${parameters.id}/in-progress`)
         && <p data-testid="recipe-category">{parameters.alcohol}</p>
       }
       <div>
         <h2>Ingredients</h2>
-        <ul>
+        <div className="d-flex row">
           {
             ingredients.map((ingredient, index) => (
-              <li
-                data-testid={ `${index}-ingredient-name-and-measure` }
+              <label
+                htmlFor={ index }
                 key={ index }
+                className="col-12"
+                data-testid={ `${index}-ingredient-step` }
               >
+                <input
+                  type="checkbox"
+                  className="m-2"
+                  onClick={ handleChecked }
+                />
                 {`${ingredient} ${measures[index]}`}
-              </li>
+              </label>
+
             ))
           }
-        </ul>
+        </div>
       </div>
       <p data-testid="recipe-category">{parameters.category}</p>
       <p data-testid="instructions">{parameters.instruction}</p>
-      {
-        (pathname === `/meals/${parameters.id}`)
-        && (
-          <div className="ratio ratio-16x9 mb-3">
-            <iframe
-              data-testid="video"
-              title="youtube video"
-              src={ parameters.video.replace('watch?v=', 'embed/') }
-              frameBorder="0"
-              allowFullScreen
-            />
-          </div>
-        )
-      }
-      <Recomendations />
-      <Link to={ `${parameters.id}/in-progress` }>
-        <button
-          type="button"
-          className="btn fixed-bottom"
-          data-testid="start-recipe-btn"
-        >
-          Start Recipe
-        </button>
-      </Link>
+      <button
+        type="button"
+        className="btn fixed-bottom"
+        data-testid="finish-recipe-btn"
+      >
+        Finish Recipe
+      </button>
+
     </div>
   );
 }
 
-RecipeDetails.propTypes = {
+RecipeInProgress.propTypes = {
   history: PropTypes.shape({
     location: PropTypes.shape({
       pathname: PropTypes.string,
@@ -176,4 +180,4 @@ RecipeDetails.propTypes = {
   }).isRequired,
 };
 
-export default withRouter(RecipeDetails);
+export default withRouter(RecipeInProgress);
