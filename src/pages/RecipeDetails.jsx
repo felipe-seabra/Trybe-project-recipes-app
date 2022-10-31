@@ -21,7 +21,7 @@ function RecipeDetails({ history }) {
     ingredients: [],
     measures: [],
   });
-
+  const [isInProgress, setIsInProgress] = useState(false);
   const separateIngredientsAndMeasures = (obj) => {
     const entries = Object.entries(obj);
     const extractIngredientsAndMeasure = entries.reduce((acc, element) => {
@@ -41,7 +41,6 @@ function RecipeDetails({ history }) {
     });
     setIngredientsAndMeasure(extractIngredientsAndMeasure);
   };
-
   const verifyPathname = useCallback((categoryApi) => {
     separateIngredientsAndMeasures(categoryApi[0]);
     if (pathname === `/drinks/${id}`) {
@@ -76,7 +75,6 @@ function RecipeDetails({ history }) {
       setParameters(data);
     }
   }, [id, pathname]);
-
   useEffect(() => {
     const handleFilter = async () => {
       const categoryApi = await RecipeDetailsApi(id, pathname);
@@ -85,7 +83,6 @@ function RecipeDetails({ history }) {
     };
     handleFilter();
   }, [history, id, pathname, verifyPathname]);
-
   const handleCopy = () => {
     const url = window.location.href;
     copy(url);
@@ -96,7 +93,6 @@ function RecipeDetails({ history }) {
       setShareCopy([]);
     }, THREE_SECONDS);
   };
-
   const handleFavorite = () => {
     const {
       idDrink,
@@ -136,10 +132,29 @@ function RecipeDetails({ history }) {
 
   useEffect(() => {
     const favoriteRecipes = getLocalStorage('favoriteRecipes');
+    const recipesInProgress = getLocalStorage('inProgressRecipes') || {};
+    const key = pathname.includes('drinks') ? 'drinks' : 'meals';
+    const keys = Object.keys(recipesInProgress[key] || []);
+    setIsInProgress(keys.includes(id));
     if (favoriteRecipes !== null) {
       setFavorites(favoriteRecipes);
     }
-  }, []);
+  }, [pathname, id]);
+
+  const handleStartedRecipes = () => {
+    const defaultObj = {
+      drinks: {
+      },
+      meals: {
+      },
+    };
+    const inProgressRecipes = getLocalStorage('inProgressRecipes') || defaultObj;
+    const key = pathname.includes('drinks') ? 'drinks' : 'meals';
+    inProgressRecipes[key][id] = [];
+    if (inProgressRecipes) {
+      setLocalStorage('inProgressRecipes', inProgressRecipes);
+    }
+  };
 
   const { ingredients, measures } = ingredientsAndMeasures;
   return (
@@ -213,8 +228,9 @@ function RecipeDetails({ history }) {
           type="button"
           className="btn fixed-bottom"
           data-testid="start-recipe-btn"
+          onClick={ handleStartedRecipes }
         >
-          Start Recipe
+          {isInProgress ? 'Continue Recipe' : 'Start Recipe'}
         </button>
       </Link>
     </div>
