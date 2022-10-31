@@ -147,8 +147,8 @@ function RecipeDetails({ history }) {
       <section>
         <button
           type="button"
-          data-testid="share-btn"
           onClick={ handleCopy }
+          data-testid="share-btn"
         >
           <img src={ shareIcon } alt="Botão compartilhar" />
         </button>
