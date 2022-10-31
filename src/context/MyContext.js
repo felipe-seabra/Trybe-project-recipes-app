@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 export const Mycontext = createContext();
 
-function Provider({ children }) {
+function ContextProvider({ children }) {
   const [search, setSearch] = useState(false);
   const contextValue = useMemo(() => ({
     search,
@@ -17,8 +17,8 @@ function Provider({ children }) {
   );
 }
 
-Provider.propTypes = {
+ContextProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export default Provider;
+export default ContextProvider;
