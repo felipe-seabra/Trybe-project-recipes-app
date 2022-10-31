@@ -20,7 +20,6 @@ function RecipeInProgress({ history }) {
   });
 
   const separateIngredientsAndMeasures = (obj) => {
-    console.log(obj);
     const entries = Object.entries(obj);
     const extractIngredientsAndMeasure = entries.reduce((acc, element) => {
       const accCopy = { ...acc };
