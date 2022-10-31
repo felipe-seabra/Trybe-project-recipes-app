@@ -4,6 +4,7 @@ import { withRouter, useParams } from 'react-router-dom';
 import copy from 'clipboard-copy';
 import PropTypes from 'prop-types';
 import RecipeDetailsApi from '../services/RecipeDetailsApi';
+import { getLocalStorage, setLocalStorage } from '../services/localStorage';
 import '../styles/pages/RecipeDetals.css';
 import searchIcon from '../images/searchIcon.svg';
 import shareIcon from '../images/shareIcon.svg';
@@ -92,19 +93,28 @@ function RecipeInProgress({ history }) {
       setShareCopy([]);
     }, THREE_SECONDS);
   };
+  const { ingredients, measures } = ingredientsAndMeasures;
 
   const handleChecked = ({ target }) => {
     const { checked } = target;
-    console.log(target);
-    console.log(checked);
     if (checked) {
       target.parentElement.className = 'checked';
     } else {
       target.parentElement.className = 'noChecked';
     }
+    const { htmlFor } = target.parentElement;
+    // console.log(htmlFor);
+
+    const getKey = getLocalStorage('inProgressRecipes');
+    if (getKey !== null) {
+      setLocalStorage('inProgressRecipes', [...getKey,
+        { id, ingredients: { [htmlFor]: checked } }]);
+    } else {
+      setLocalStorage('inProgressRecipes', [
+        { id, ingredients: { [htmlFor]: checked } }]);
+    }
   };
 
-  const { ingredients, measures } = ingredientsAndMeasures;
   return (
     <div className="container justify-content-center">
       <section>
