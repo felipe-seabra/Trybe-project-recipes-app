@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useContext } from 'react';
-import { withRouter, useParams, Link } from 'react-router-dom';
+import { withRouter, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import RecipeDetailsApi from '../services/RecipeDetailsApi';
 import Recomendations from '../components/Recomendations';
@@ -32,7 +32,7 @@ function RecipeDetails({ history }) {
       if (key.includes('Ingredient') && value) {
         accCopy.ingredients.push(value);
       }
-      if (key.includes('Measure') && (value !== ' ' || value)) {
+      if (key.includes('Measure') && (value !== ' ')) {
         accCopy.measures.push(value);
       }
       return accCopy;
@@ -43,44 +43,51 @@ function RecipeDetails({ history }) {
     setIngredientsAndMeasure(extractIngredientsAndMeasure);
   };
   const verifyPathname = useCallback((categoryApi) => {
-    separateIngredientsAndMeasures(categoryApi[0]);
-    if (pathname === `/drinks/${id}`) {
-      const {
-        strDrink,
-        strDrinkThumb,
-        idDrink, strCategory,
-        strInstructions,
-        strAlcoholic,
-      } = categoryApi[0];
+    if (categoryApi) {
+      separateIngredientsAndMeasures(categoryApi[0]);
 
-      const data = {
-        instruction: strInstructions,
-        alcohol: strAlcoholic,
-        category: strCategory,
-        picture: strDrinkThumb,
-        title: strDrink,
-        id: idDrink,
-      };
-      setParameters(data);
-    } else {
-      const { strMeal, strMealThumb, idMeal, strCategory, strInstructions, strYoutube,
-      } = categoryApi[0];
-      const data = {
-        video: strYoutube,
-        instruction: strInstructions,
-        category: strCategory,
-        picture: strMealThumb,
-        title: strMeal,
-        id: idMeal,
-      };
-      setParameters(data);
+      if (pathname === `/drinks/${id}`) {
+        const {
+          strDrink,
+          strDrinkThumb,
+          idDrink, strCategory,
+          strInstructions,
+          strAlcoholic,
+        } = categoryApi[0];
+
+        const data = {
+          instruction: strInstructions,
+          alcohol: strAlcoholic,
+          category: strCategory,
+          picture: strDrinkThumb,
+          title: strDrink,
+          id: idDrink,
+        };
+        setParameters(data);
+      } else {
+        const { strMeal, strMealThumb, idMeal, strCategory, strInstructions, strYoutube,
+        } = categoryApi[0];
+        const data = {
+          video: strYoutube,
+          instruction: strInstructions,
+          category: strCategory,
+          picture: strMealThumb,
+          title: strMeal,
+          id: idMeal,
+        };
+        setParameters(data);
+      }
     }
   }, [id, pathname]);
   useEffect(() => {
     const handleFilter = async () => {
       const categoryApi = await RecipeDetailsApi(id, pathname);
-      setDefaultApi(categoryApi[0]);
-      verifyPathname(categoryApi);
+      if (categoryApi) {
+        console.log(categoryApi, 'oneDrink');
+        setDefaultApi(categoryApi[0]);
+        console.log(categoryApi);
+        verifyPathname(categoryApi);
+      }
     };
     handleFilter();
   }, [history, id, pathname, verifyPathname]);
@@ -101,7 +108,7 @@ function RecipeDetails({ history }) {
     const newFavorite = {
       id: idDrink || idMeal,
       type: pathname.includes('drink') ? 'drink' : 'meal',
-      nationality: strArea || '',
+      nationality: strArea,
       category: strCategory,
       alcoholicOrNot: strAlcoholic || '',
       name: strDrink || strMeal,
@@ -146,6 +153,7 @@ function RecipeDetails({ history }) {
     if (inProgressRecipes) {
       setLocalStorage('inProgressRecipes', inProgressRecipes);
     }
+    history.push(`${parameters.id}/in-progress`);
   };
 
   const { ingredients, measures } = ingredientsAndMeasures;
@@ -215,16 +223,14 @@ function RecipeDetails({ history }) {
         )
       }
       <Recomendations />
-      <Link to={ `${parameters.id}/in-progress` }>
-        <button
-          type="button"
-          className="btn fixed-bottom"
-          data-testid="start-recipe-btn"
-          onClick={ handleStartedRecipes }
-        >
-          {isInProgress ? 'Continue Recipe' : 'Start Recipe'}
-        </button>
-      </Link>
+      <button
+        type="button"
+        className="btn fixed-bottom"
+        data-testid="start-recipe-btn"
+        onClick={ handleStartedRecipes }
+      >
+        {isInProgress ? 'Continue Recipe' : 'Start Recipe'}
+      </button>
     </div>
   );
 }
@@ -234,6 +240,7 @@ RecipeDetails.propTypes = {
     location: PropTypes.shape({
       pathname: PropTypes.string,
     }),
+    push: PropTypes.func,
   }).isRequired,
 };
 export default withRouter(RecipeDetails);
