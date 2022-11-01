@@ -1,10 +1,10 @@
 import React from 'react';
 import { screen, act, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import renderWithRouterAndRedux from './helpers/renderWithRouterAndRedux';
 import App from '../App';
 import oneMeal from '../../cypress/mocks/oneMeal';
 import drinks from '../../cypress/mocks/drinks';
+import RenderWithContext from './helpers/RenderWithRouterContext';
 
 const SEARCH_TOP_TEST_ID = 'search-top-btn';
 const SEARCH_INPUT_TEST_ID = 'search-input';
@@ -20,8 +20,8 @@ describe('Testa componente SearchBar com apenas um resultado', () => {
   afterEach(() => {
     global.fetch.mockClear();
   });
-  it('Verifica se renderiza as informações na rota /drinks', async () => {
-    const { history } = renderWithRouterAndRedux(<App />);
+  it('Verifica se renderiza as informações na rota /drinks e muda quanto a API retorna apenas 1 resultado', async () => {
+    const { history } = RenderWithContext(<App />);
     act(() => {
       history.push('/meals');
     });
@@ -44,8 +44,8 @@ describe('Testa componente SearchBar com apenas um resultado', () => {
     }, {
       timeout: 5000,
     });
-    const image = screen.getByTestId('0-card-img');
-    const foodName = screen.getByTestId('0-card-name');
+    const image = await screen.findByTestId('recipe-photo');
+    const foodName = await screen.findByTestId('recipe-title');
 
     expect(image).toBeInTheDocument();
     expect(foodName).toBeInTheDocument();
@@ -67,7 +67,7 @@ describe('Testa quando a API não retorna resultados', () => {
 
   it('Testa se aparece o alerta', () => {
     jest.spyOn(window, 'alert').mockImplementation(() => {});
-    const { history } = renderWithRouterAndRedux(<App />);
+    const { history } = RenderWithContext(<App />);
     act(() => {
       history.push('/meals');
     });
@@ -100,7 +100,7 @@ describe('Testa com diversos resultados', () => {
     global.fetch.mockClear();
   });
   it('As bebidas são renderizadas na tela', async () => {
-    const { history } = renderWithRouterAndRedux(<App />);
+    const { history } = RenderWithContext(<App />);
     act(() => {
       history.push('/drinks');
     });
@@ -116,8 +116,7 @@ describe('Testa com diversos resultados', () => {
       userEvent.click(firstLetterRadio);
       userEvent.click(searchBtn);
     });
-    const list = screen.getByRole('list');
-    expect(history.location.pathname).toEqual('/drinks');
+    const list = await screen.findByRole('list');
     expect(list).toBeInTheDocument();
 
     await waitFor(() => {

@@ -2,12 +2,13 @@ import React from 'react';
 import { screen, act, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Header from '../components/Header';
+import RenderWithContext from './helpers/RenderWithRouterContext';
 import renderWithRouterAndRedux from './helpers/renderWithRouterAndRedux';
 import App from '../App';
+import chickenMeals from '../../cypress/mocks/chickenMeals';
 import oneDrink from '../../cypress/mocks/oneDrink';
 
 describe('Redirecione a pessoa usuária para a tela de perfil ao clicar no botão de perfil', () => {
-  // test ids
   const SEARCH_TOP_TEST_ID = 'search-top-btn';
   const SEARCH_INPUT_TEST_ID = 'search-input';
   const SEARCH_BTN_TEST_ID = 'exec-search-btn';
@@ -23,7 +24,9 @@ describe('Redirecione a pessoa usuária para a tela de perfil ao clicar no botã
   });
 
   test('Se ao clicar na lupa aparece o campo para pesquisar', () => {
-    renderWithRouterAndRedux(<Header title="meal" />);
+    RenderWithContext(
+      <Header title="meal" />,
+    );
     const searchIcon = screen.getByTestId(SEARCH_TOP_TEST_ID);
     act(() => {
       userEvent.click(searchIcon);
@@ -40,8 +43,11 @@ describe('Redirecione a pessoa usuária para a tela de perfil ao clicar no botã
     expect(searchInput).toBeInTheDocument();
   });
 
-  test('', () => {
-    renderWithRouterAndRedux(<Header title="Meals" />);
+  test('É possível pesquisar por chicken como ingrediente', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      json: jest.fn().mockResolvedValue(chickenMeals),
+    });
+    RenderWithContext(<Header title="Meals" />);
     const searchIcon = screen.getByTestId(SEARCH_TOP_TEST_ID);
     act(() => {
       userEvent.click(searchIcon);
@@ -55,13 +61,19 @@ describe('Redirecione a pessoa usuária para a tela de perfil ao clicar no botã
       userEvent.click(ingredientRadio);
       userEvent.click(searchBtn);
     });
+
+    const firstRecipe = await screen.findByRole('img', {
+      name: /brown stew chicken/i,
+    });
+    expect(firstRecipe).toBeInTheDocument();
+    global.fetch.mockClear();
   });
 
-  test('', async () => {
+  test('Muda para a rota de detalhes quando a API só retorna um resultado', async () => {
     global.fetch = jest.fn().mockResolvedValue({
       json: jest.fn().mockResolvedValue(oneDrink),
     });
-    const { history } = renderWithRouterAndRedux(<App />);
+    const { history } = RenderWithContext(<App />);
     act(() => {
       history.push('/drinks');
     });
@@ -83,5 +95,6 @@ describe('Redirecione a pessoa usuária para a tela de perfil ao clicar no botã
     await waitFor(() => {
       expect(history.location.pathname).toBe('/drinks/178319');
     }, { timeout: 5000 });
+    global.fetch.mockClear();
   });
 });
