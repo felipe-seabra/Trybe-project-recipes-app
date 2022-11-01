@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useContext } from 'react';
 import { withRouter, useParams, Link } from 'react-router-dom';
-import copy from 'clipboard-copy';
 import PropTypes from 'prop-types';
 import RecipeDetailsApi from '../services/RecipeDetailsApi';
 import Recomendations from '../components/Recomendations';
@@ -9,14 +8,16 @@ import whiteHeartIcon from '../images/whiteHeartIcon.svg';
 import blackHeartIcon from '../images/blackHeartIcon.svg';
 import shareIcon from '../images/shareIcon.svg';
 import { getLocalStorage, setLocalStorage } from '../services/localStorage';
+import { Mycontext } from '../context/MyContext';
 
 function RecipeDetails({ history }) {
   const { location: { pathname } } = history;
+  const { handleCopy, shareCopy } = useContext(Mycontext);
   const { id } = useParams();
   const [favorites, setFavorites] = useState([]);
   const [defaultApi, setDefaultApi] = useState({});
   const [parameters, setParameters] = useState([]);
-  const [shareCopy, setShareCopy] = useState([]);
+
   const [ingredientsAndMeasures, setIngredientsAndMeasure] = useState({
     ingredients: [],
     measures: [],
@@ -84,16 +85,6 @@ function RecipeDetails({ history }) {
     handleFilter();
   }, [history, id, pathname, verifyPathname]);
 
-  const handleCopy = () => {
-    const url = window.location.href;
-    copy(url);
-    setShareCopy('Link copied!');
-
-    const THREE_SECONDS = 3000;
-    setTimeout(() => {
-      setShareCopy([]);
-    }, THREE_SECONDS);
-  };
   const handleFavorite = () => {
     const {
       idDrink,
