@@ -1,5 +1,5 @@
 async function RecipeDetailsApi(recipeId, pathName) {
-  const domain = (pathName === `/drinks/${recipeId}` ? 'thecocktaildb' : 'themealdb');
+  const domain = (pathName.includes('drinks') ? 'thecocktaildb' : 'themealdb');
 
   const ENDPOINT = `https://www.${domain}.com/api/json/v1/1/lookup.php?i=${recipeId}`;
   const response = await fetch(ENDPOINT);
