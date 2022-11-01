@@ -12,6 +12,7 @@ import '../styles/pages/RecipeInProgress.css';
 
 function RecipeInProgress({ history }) {
   const { location: { pathname } } = history;
+  const keyToSearchFor = pathname.includes('meals') ? 'meals' : 'drinks';
   const { id } = useParams();
   const [parameters, setParameters] = useState([]);
   const [shareCopy, setShareCopy] = useState([]);
@@ -19,6 +20,15 @@ function RecipeInProgress({ history }) {
     ingredients: [],
     measures: [],
   });
+  const INITIAL_STATE = {
+    drinks: {},
+    meals: {},
+    [keyToSearchFor]: {
+      [id]: [],
+    },
+  };
+
+  const [inProgressRecipes, setInProgressRecipes] = useState(INITIAL_STATE);
 
   const separateIngredientsAndMeasures = (obj) => {
     const entries = Object.entries(obj);
@@ -97,23 +107,41 @@ function RecipeInProgress({ history }) {
 
   const handleChecked = ({ target }) => {
     const { checked } = target;
+
+    const ingredientAndMeasure = target.nextSibling.innerText;
+    const prevCopy = inProgressRecipes[keyToSearchFor][id];
+
     if (checked) {
       target.parentElement.className = 'checked';
+      const newList = [...prevCopy, ingredientAndMeasure];
+      setInProgressRecipes({
+        ...inProgressRecipes,
+        [keyToSearchFor]: {
+          [id]: newList,
+        },
+      });
     } else {
       target.parentElement.className = 'noChecked';
-    }
-    const { htmlFor } = target.parentElement;
-    // console.log(htmlFor);
-
-    const getKey = getLocalStorage('inProgressRecipes');
-    if (getKey !== null) {
-      setLocalStorage('inProgressRecipes', [...getKey,
-        { id, ingredients: { [htmlFor]: checked } }]);
-    } else {
-      setLocalStorage('inProgressRecipes', [
-        { id, ingredients: { [htmlFor]: checked } }]);
+      const newList = inProgressRecipes[keyToSearchFor][id]
+        .filter((element) => element !== ingredientAndMeasure);
+      setInProgressRecipes({
+        ...inProgressRecipes,
+        [keyToSearchFor]: {
+          [id]: newList,
+        },
+      });
     }
   };
+
+  useEffect(() => {
+    const localInProgress = getLocalStorage('inProgressRecipes') || INITIAL_STATE;
+    console.log(localInProgress);
+    setInProgressRecipes(localInProgress);
+  }, []);
+
+  useEffect(() => {
+    setLocalStorage('inProgressRecipes', inProgressRecipes);
+  }, [inProgressRecipes]);
 
   return (
     <div className="container justify-content-center">
@@ -148,22 +176,29 @@ function RecipeInProgress({ history }) {
         <h2>Ingredients</h2>
         <div className="d-flex row">
           {
-            ingredients.map((ingredient, index) => (
-              <label
-                htmlFor={ index }
-                key={ index }
-                className="col-12"
-                data-testid={ `${index}-ingredient-step` }
-              >
-                <input
-                  type="checkbox"
-                  className="m-2"
-                  onClick={ handleChecked }
-                />
-                {`${ingredient} ${measures[index]}`}
-              </label>
+            ingredients.map((ingredient, index) => {
+              const ingredientAndMeasure = `${ingredient} ${measures[index]}`;
+              const shouldBeChecked = inProgressRecipes[keyToSearchFor][id]
+                .includes(ingredientAndMeasure);
+              return (
+                <label
+                  htmlFor={ index }
+                  key={ index }
+                  className={ `col-12 
+                  ${shouldBeChecked ? 'checked' : 'noChecked'}` }
+                  data-testid={ `${index}-ingredient-step` }
+                >
+                  <input
+                    type="checkbox"
+                    className="m-2"
+                    onClick={ handleChecked }
+                    defaultChecked={ shouldBeChecked }
+                  />
 
-            ))
+                  <span>{ingredientAndMeasure}</span>
+                </label>
+              );
+            })
           }
         </div>
       </div>
