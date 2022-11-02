@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import Header from '../components/Header';
+import DoneRecipes from '../components/DoneRecipes';
 
-class DoneRecipes extends Component {
+class DoneRecipesPage extends Component {
   render() {
     return (
       <div>
         <Header title="Done Recipes" search={ false } />
+        <DoneRecipes />
       </div>
     );
   }
 }
 
-export default DoneRecipes;
+export default DoneRecipesPage;
