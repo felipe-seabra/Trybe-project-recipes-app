@@ -17,6 +17,7 @@ function RecipeInProgress({ history }) {
   const keyToSearchFor = pathname.includes('meals') ? 'meals' : 'drinks';
   const { id } = useParams();
   const [favorites, setFavorites] = useState([]);
+  const [defaultApi, setDefaultApi] = useState({});
   const [parameters, setParameters] = useState([]);
   const [ingredientsAndMeasures, setIngredientsAndMeasure] = useState({
     ingredients: [],
@@ -39,7 +40,7 @@ function RecipeInProgress({ history }) {
       if (key.includes('Ingredient') && value) {
         accCopy.ingredients.push(value);
       }
-      if (key.includes('Measure') && (value !== ' ' || value)) {
+      if (key.includes('Measure') && (value !== ' ')) {
         accCopy.measures.push(value);
       }
       return accCopy;
@@ -86,6 +87,7 @@ function RecipeInProgress({ history }) {
   useEffect(() => {
     const handleFilter = async () => {
       const categoryApi = await RecipeDetailsApi(id, pathname);
+      setDefaultApi(categoryApi[0]);
       verifyPathname(categoryApi);
     };
     const favoriteRecipes = getLocalStorage('favoriteRecipes');
@@ -106,6 +108,7 @@ function RecipeInProgress({ history }) {
       strDrinkThumb,
       strMealThumb,
     } = defaultApi;
+
     const newFavorite = {
       id: idDrink || idMeal,
       type: pathname.includes('drink') ? 'drink' : 'meal',
@@ -115,6 +118,7 @@ function RecipeInProgress({ history }) {
       name: strDrink || strMeal,
       image: strDrinkThumb || strMealThumb,
     };
+
     const recipeIsFavorite = favorites
       .some((recipe) => Number(recipe.id) === Number(id));
     if (recipeIsFavorite) {

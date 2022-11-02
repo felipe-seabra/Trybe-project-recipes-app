@@ -10,7 +10,13 @@ function ContextProvider({ children }) {
 
   const handleCopy = () => {
     const url = window.location.href;
-    copy(url);
+    if (url.includes('in-progress')) {
+      const urlReplaced = url.replace('/in-progress', '');
+      copy(urlReplaced);
+    } else {
+      copy(url);
+    }
+
     setShareCopy('Link copied!');
 
     const THREE_SECONDS = 3000;
