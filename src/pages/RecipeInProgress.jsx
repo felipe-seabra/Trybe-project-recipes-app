@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState, useCallback, useContext } from 'react';
+import React, { useEffect, useState, useContext, useMemo } from 'react';
 import { withRouter, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import RecipeDetailsApi from '../services/RecipeDetailsApi';
@@ -13,77 +12,22 @@ import '../styles/pages/RecipeInProgress.css';
 
 function RecipeInProgress({ history }) {
   const { location: { pathname } } = history;
-  const { handleCopy, shareCopy } = useContext(Mycontext);
+  const { handleCopy, shareCopy,
+    ingredientsAndMeasures, verifyPathname, parameters } = useContext(Mycontext);
   const keyToSearchFor = pathname.includes('meals') ? 'meals' : 'drinks';
   const { id } = useParams();
   const [favorites, setFavorites] = useState([]);
+  const [isRecipeDone, setIsRecipeDone] = useState(false);
   const [defaultApi, setDefaultApi] = useState({});
-  const [parameters, setParameters] = useState([]);
-  const [ingredientsAndMeasures, setIngredientsAndMeasure] = useState({
-    ingredients: [],
-    measures: [],
-  });
-  const INITIAL_STATE = {
+  const INITIAL_STATE = useMemo(() => ({
     drinks: {},
     meals: {},
     [keyToSearchFor]: {
       [id]: [],
     },
-  };
+  }), [id, keyToSearchFor]);
   const [inProgressRecipes, setInProgressRecipes] = useState(INITIAL_STATE);
-  const separateIngredientsAndMeasures = (obj) => {
-    const entries = Object.entries(obj);
-    const extractIngredientsAndMeasure = entries.reduce((acc, element) => {
-      const accCopy = { ...acc };
-      const key = element[0];
-      const value = element[1];
-      if (key.includes('Ingredient') && value) {
-        accCopy.ingredients.push(value);
-      }
-      if (key.includes('Measure') && (value !== ' ')) {
-        accCopy.measures.push(value);
-      }
-      return accCopy;
-    }, {
-      ingredients: [],
-      measures: [],
-    });
-    setIngredientsAndMeasure(extractIngredientsAndMeasure);
-  };
-  const verifyPathname = useCallback((categoryApi) => {
-    separateIngredientsAndMeasures(categoryApi[0]);
-    if (pathname.includes('drinks')) {
-      const {
-        strDrink,
-        strDrinkThumb,
-        idDrink, strCategory,
-        strInstructions,
-        strAlcoholic,
-      } = categoryApi[0];
-
-      const data = {
-        instruction: strInstructions,
-        alcohol: strAlcoholic,
-        category: strCategory,
-        picture: strDrinkThumb,
-        title: strDrink,
-        id: idDrink,
-      };
-      setParameters(data);
-    } else {
-      const { strMeal, strMealThumb, idMeal, strCategory, strInstructions, strYoutube,
-      } = categoryApi[0];
-      const data = {
-        video: strYoutube,
-        instruction: strInstructions,
-        category: strCategory,
-        picture: strMealThumb,
-        title: strMeal,
-        id: idMeal,
-      };
-      setParameters(data);
-    }
-  }, [id, pathname]);
+  console.log(inProgressRecipes);
   useEffect(() => {
     const handleFilter = async () => {
       const categoryApi = await RecipeDetailsApi(id, pathname);
@@ -98,15 +42,8 @@ function RecipeInProgress({ history }) {
   }, [history, id, pathname, verifyPathname]);
   const handleFavorite = () => {
     const {
-      idDrink,
-      idMeal,
-      strArea,
-      strCategory,
-      strAlcoholic,
-      strDrink,
-      strMeal,
-      strDrinkThumb,
-      strMealThumb,
+      idDrink, idMeal, strArea, strCategory, strAlcoholic,
+      strDrink, strMeal, strDrinkThumb, strMealThumb,
     } = defaultApi;
 
     const newFavorite = {
@@ -160,13 +97,42 @@ function RecipeInProgress({ history }) {
       });
     }
   };
+
+  const handleFinishRecipe = () => {
+    const { strArea, strCategory, strAlcoholic, strMeal,
+      strDrink, strDrinkThumb, strMealThumb, strTags } = defaultApi;
+
+    const tagsArray = strTags ? strTags.replace(/\s/g, '').split(',') : [];
+    const currentDate = new Date();
+    const currentDoneRecipe = {
+      id,
+      type: pathname.includes('drink') ? 'drink' : 'meal',
+      nationality: strArea || '',
+      category: strCategory,
+      alcoholicOrNot: strAlcoholic || '',
+      name: strDrink || strMeal,
+      image: strDrinkThumb || strMealThumb,
+      doneDate: currentDate.toISOString(),
+      tags: tagsArray,
+    };
+    const doneRecipes = getLocalStorage('doneRecipes') || [];
+    setLocalStorage('doneRecipes', [...doneRecipes, currentDoneRecipe]);
+
+    history.push('/done-recipes');
+  };
+
   useEffect(() => {
     const localInProgress = getLocalStorage('inProgressRecipes') || INITIAL_STATE;
     setInProgressRecipes(localInProgress);
-  }, []);
+  }, [INITIAL_STATE]);
+
   useEffect(() => {
     setLocalStorage('inProgressRecipes', inProgressRecipes);
-  }, [inProgressRecipes]);
+    const listOfChecked = inProgressRecipes[keyToSearchFor][id] || [];
+    const isItDone = listOfChecked.length === ingredients.length;
+    setIsRecipeDone(isItDone);
+  }, [id, inProgressRecipes, ingredients.length, keyToSearchFor]);
+
   return (
     <div className="container justify-content-center">
       <section>
@@ -233,6 +199,8 @@ function RecipeInProgress({ history }) {
         type="button"
         className="btn fixed-bottom"
         data-testid="finish-recipe-btn"
+        disabled={ !isRecipeDone }
+        onClick={ handleFinishRecipe }
       >
         Finish Recipe
       </button>
@@ -244,6 +212,7 @@ RecipeInProgress.propTypes = {
     location: PropTypes.shape({
       pathname: PropTypes.string,
     }),
+    push: PropTypes.func,
   }).isRequired,
 };
 export default withRouter(RecipeInProgress);
