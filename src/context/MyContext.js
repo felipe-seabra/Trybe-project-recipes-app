@@ -8,11 +8,14 @@ function ContextProvider({ children }) {
   const [search, setSearch] = useState(false);
   const [shareCopy, setShareCopy] = useState([]);
 
-  const handleCopy = () => {
+  const handleCopy = (id, type) => {
     const url = window.location.href;
     if (url.includes('in-progress')) {
       const urlReplaced = url.replace('/in-progress', '');
       copy(urlReplaced);
+    } else if (url.includes('done-recipes')) {
+      const done = `${window.location.origin}/${type}s/${id}`;
+      copy(done);
     } else {
       copy(url);
     }

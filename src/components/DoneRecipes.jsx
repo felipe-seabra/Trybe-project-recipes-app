@@ -37,10 +37,11 @@ function DoneRecipes() {
 
       <section>
         {doneRecipesSaved.map((doneRecipes, index) => {
-          const { id, image, category, name, doneDate, tags } = doneRecipes;
+          const { id, image, category, name, doneDate, tags, type } = doneRecipes;
           return (
-            <div key={ id }>
+            <div key={ id } className="container">
               <img
+                className="img-fluid"
                 data-testid={ `${index}-horizontal-image` }
                 src={ image }
                 alt={ name }
@@ -49,11 +50,11 @@ function DoneRecipes() {
               <p data-testid={ `${index}-horizontal-top-text` }>{category}</p>
               <p data-testid={ `${index}-horizontal-done-date` }>{doneDate}</p>
               {tags.map((tag, i) => (
-                <p key={ i } data-testid={ `${i}-horizontal-tag` }>{tag}</p>
+                <p key={ i } data-testid={ `${index}-${tag}-horizontal-tag` }>{tag}</p>
               ))}
               <button
                 type="button"
-                onClick={ handleCopy }
+                onClick={ () => handleCopy(id, type) }
                 data-testid={ `${index}-horizontal-share-btn` }
               >
                 <img src={ shareIcon } alt="Botão compartilhar" />
