@@ -83,9 +83,7 @@ function RecipeDetails({ history }) {
     const handleFilter = async () => {
       const categoryApi = await RecipeDetailsApi(id, pathname);
       if (categoryApi) {
-        console.log(categoryApi, 'oneDrink');
         setDefaultApi(categoryApi[0]);
-        console.log(categoryApi);
         verifyPathname(categoryApi);
       }
     };
@@ -108,7 +106,7 @@ function RecipeDetails({ history }) {
     const newFavorite = {
       id: idDrink || idMeal,
       type: pathname.includes('drink') ? 'drink' : 'meal',
-      nationality: strArea,
+      nationality: strArea || '',
       category: strCategory,
       alcoholicOrNot: strAlcoholic || '',
       name: strDrink || strMeal,

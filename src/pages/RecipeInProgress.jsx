@@ -1,21 +1,23 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useContext } from 'react';
 import { withRouter, useParams } from 'react-router-dom';
-import copy from 'clipboard-copy';
 import PropTypes from 'prop-types';
 import RecipeDetailsApi from '../services/RecipeDetailsApi';
 import { getLocalStorage, setLocalStorage } from '../services/localStorage';
 import '../styles/pages/RecipeDetals.css';
-import searchIcon from '../images/searchIcon.svg';
+import whiteHeartIcon from '../images/whiteHeartIcon.svg';
+import blackHeartIcon from '../images/blackHeartIcon.svg';
 import shareIcon from '../images/shareIcon.svg';
+import { Mycontext } from '../context/MyContext';
 import '../styles/pages/RecipeInProgress.css';
 
 function RecipeInProgress({ history }) {
   const { location: { pathname } } = history;
+  const { handleCopy, shareCopy } = useContext(Mycontext);
   const keyToSearchFor = pathname.includes('meals') ? 'meals' : 'drinks';
   const { id } = useParams();
+  const [favorites, setFavorites] = useState([]);
   const [parameters, setParameters] = useState([]);
-  const [shareCopy, setShareCopy] = useState([]);
   const [ingredientsAndMeasures, setIngredientsAndMeasure] = useState({
     ingredients: [],
     measures: [],
@@ -27,9 +29,7 @@ function RecipeInProgress({ history }) {
       [id]: [],
     },
   };
-
   const [inProgressRecipes, setInProgressRecipes] = useState(INITIAL_STATE);
-
   const separateIngredientsAndMeasures = (obj) => {
     const entries = Object.entries(obj);
     const extractIngredientsAndMeasure = entries.reduce((acc, element) => {
@@ -49,7 +49,6 @@ function RecipeInProgress({ history }) {
     });
     setIngredientsAndMeasure(extractIngredientsAndMeasure);
   };
-
   const verifyPathname = useCallback((categoryApi) => {
     separateIngredientsAndMeasures(categoryApi[0]);
     if (pathname.includes('drinks')) {
@@ -84,27 +83,52 @@ function RecipeInProgress({ history }) {
       setParameters(data);
     }
   }, [id, pathname]);
-
   useEffect(() => {
     const handleFilter = async () => {
       const categoryApi = await RecipeDetailsApi(id, pathname);
       verifyPathname(categoryApi);
     };
+    const favoriteRecipes = getLocalStorage('favoriteRecipes');
+    if (favoriteRecipes !== null) {
+      setFavorites(favoriteRecipes);
+    }
     handleFilter();
   }, [history, id, pathname, verifyPathname]);
-
-  const handleCopy = () => {
-    const url = window.location.href;
-    copy(url);
-    setShareCopy('Link copied!');
-
-    const THREE_SECONDS = 3000;
-    setTimeout(() => {
-      setShareCopy([]);
-    }, THREE_SECONDS);
+  const handleFavorite = () => {
+    const {
+      idDrink,
+      idMeal,
+      strArea,
+      strCategory,
+      strAlcoholic,
+      strDrink,
+      strMeal,
+      strDrinkThumb,
+      strMealThumb,
+    } = defaultApi;
+    const newFavorite = {
+      id: idDrink || idMeal,
+      type: pathname.includes('drink') ? 'drink' : 'meal',
+      nationality: strArea || '',
+      category: strCategory,
+      alcoholicOrNot: strAlcoholic || '',
+      name: strDrink || strMeal,
+      image: strDrinkThumb || strMealThumb,
+    };
+    const recipeIsFavorite = favorites
+      .some((recipe) => Number(recipe.id) === Number(id));
+    if (recipeIsFavorite) {
+      const removedItem = favorites.filter((recipe) => (
+        Number(recipe.id) !== Number(id)
+      ));
+      setLocalStorage('favoriteRecipes', removedItem);
+      setFavorites(removedItem);
+    } else {
+      setLocalStorage('favoriteRecipes', [...favorites, newFavorite]);
+      setFavorites([...favorites, newFavorite]);
+    }
   };
   const { ingredients, measures } = ingredientsAndMeasures;
-
   const handleChecked = ({ target }) => {
     const { checked } = target;
 
@@ -132,17 +156,13 @@ function RecipeInProgress({ history }) {
       });
     }
   };
-
   useEffect(() => {
     const localInProgress = getLocalStorage('inProgressRecipes') || INITIAL_STATE;
-    console.log(localInProgress);
     setInProgressRecipes(localInProgress);
   }, []);
-
   useEffect(() => {
     setLocalStorage('inProgressRecipes', inProgressRecipes);
   }, [inProgressRecipes]);
-
   return (
     <div className="container justify-content-center">
       <section>
@@ -154,11 +174,13 @@ function RecipeInProgress({ history }) {
           <img src={ shareIcon } alt="Botão compartilhar" />
         </button>
         <p>{shareCopy}</p>
-        <button
-          type="button"
-          data-testid="favorite-btn"
-        >
-          <img src={ searchIcon } alt="Botão favoritar" />
+        <button type="button" onClick={ handleFavorite }>
+          <img
+            data-testid="favorite-btn"
+            src={ favorites.some(((element) => Number(element.id) === Number(id)
+            )) ? blackHeartIcon : whiteHeartIcon }
+            alt="Botão favoritar"
+          />
         </button>
       </section>
       <img
@@ -194,7 +216,6 @@ function RecipeInProgress({ history }) {
                     onClick={ handleChecked }
                     defaultChecked={ shouldBeChecked }
                   />
-
                   <span>{ingredientAndMeasure}</span>
                 </label>
               );
@@ -211,11 +232,9 @@ function RecipeInProgress({ history }) {
       >
         Finish Recipe
       </button>
-
     </div>
   );
 }
-
 RecipeInProgress.propTypes = {
   history: PropTypes.shape({
     location: PropTypes.shape({
@@ -223,5 +242,4 @@ RecipeInProgress.propTypes = {
     }),
   }).isRequired,
 };
-
 export default withRouter(RecipeInProgress);
