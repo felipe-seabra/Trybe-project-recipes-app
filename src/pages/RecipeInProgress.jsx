@@ -27,6 +27,7 @@ function RecipeInProgress({ history }) {
     },
   }), [id, keyToSearchFor]);
   const [inProgressRecipes, setInProgressRecipes] = useState(INITIAL_STATE);
+  console.log(inProgressRecipes);
   useEffect(() => {
     const handleFilter = async () => {
       const categoryApi = await RecipeDetailsApi(id, pathname);
@@ -97,6 +98,29 @@ function RecipeInProgress({ history }) {
     }
   };
 
+  const handleFinishRecipe = () => {
+    const { strArea, strCategory, strAlcoholic, strMeal,
+      strDrink, strDrinkThumb, strMealThumb, strTags } = defaultApi;
+
+    const tagsArray = strTags ? strTags.replace(/\s/g, '').split(',') : [];
+    const currentDate = new Date();
+    const currentDoneRecipe = {
+      id,
+      type: pathname.includes('drink') ? 'drink' : 'meal',
+      nationality: strArea || '',
+      category: strCategory,
+      alcoholicOrNot: strAlcoholic || '',
+      name: strDrink || strMeal,
+      image: strDrinkThumb || strMealThumb,
+      doneDate: currentDate.toISOString(),
+      tags: tagsArray,
+    };
+    const doneRecipes = getLocalStorage('doneRecipes') || [];
+    setLocalStorage('doneRecipes', [...doneRecipes, currentDoneRecipe]);
+
+    history.push('/done-recipes');
+  };
+
   useEffect(() => {
     const localInProgress = getLocalStorage('inProgressRecipes') || INITIAL_STATE;
     setInProgressRecipes(localInProgress);
@@ -104,7 +128,7 @@ function RecipeInProgress({ history }) {
 
   useEffect(() => {
     setLocalStorage('inProgressRecipes', inProgressRecipes);
-    const listOfChecked = inProgressRecipes[keyToSearchFor][id];
+    const listOfChecked = inProgressRecipes[keyToSearchFor][id] || [];
     const isItDone = listOfChecked.length === ingredients.length;
     setIsRecipeDone(isItDone);
   }, [id, inProgressRecipes, ingredients.length, keyToSearchFor]);
@@ -176,6 +200,7 @@ function RecipeInProgress({ history }) {
         className="btn fixed-bottom"
         data-testid="finish-recipe-btn"
         disabled={ !isRecipeDone }
+        onClick={ handleFinishRecipe }
       >
         Finish Recipe
       </button>
@@ -187,6 +212,7 @@ RecipeInProgress.propTypes = {
     location: PropTypes.shape({
       pathname: PropTypes.string,
     }),
+    push: PropTypes.func,
   }).isRequired,
 };
 export default withRouter(RecipeInProgress);
