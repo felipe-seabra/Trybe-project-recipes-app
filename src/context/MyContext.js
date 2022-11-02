@@ -22,7 +22,6 @@ function ContextProvider({ children }) {
   const contextValue = useMemo(() => ({
     search,
     shareCopy,
-    btnFinish,
     handleCopy,
     setSearch,
   }), [search, shareCopy]);
