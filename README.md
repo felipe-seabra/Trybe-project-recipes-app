@@ -84,7 +84,7 @@ O protótipo foi usado como base para o desenvolvimento do projeto.
 ## ANTES DE INICIALIZAR A APLICAÇÃO:
 
 1. Clone o repositório
-  * `git clone git@github.com:THIAGOMARTINS367/Trybe-project-recipes-app.git`
+  * `git clone git@github.com:felipe-seabra/Trybe-project-recipes-app.git`
   * Entre na pasta do repositório que você acabou de clonar:
     * `cd Trybe-project-recipes-app`
 
