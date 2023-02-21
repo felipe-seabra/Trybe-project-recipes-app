@@ -312,3 +312,6 @@ As rotas utilizadas na aplicação são as seguintes:
 Para os componentes que contêm a funcionalidade de favoritar pratos ou bebidas, foi necessário utilizar a biblioteca `clipboard-copy` para copiar as informações da receita.
 
 Para mais informações, consulte a [documentação](https://www.npmjs.com/package/clipboard-copy)
+
+
+© Desenvolvido por [Felipe Seabra](https://www.linkedin.com/in/felipe-seabra/) 
